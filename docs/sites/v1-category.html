@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Productivity Templates — Quorbz Store</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #3b82f6; --accent-light: #60a5fa; --accent-dark: #1d4ed8;
+    --bg: #060a14; --surface: #0b1120; --elevated: #111827;
+    --border: rgba(255,255,255,0.06); --border-accent: rgba(59,130,246,0.3);
+    --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #475569;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(6,10,20,0.88); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff; box-shadow: 0 0 16px rgba(59,130,246,0.35);
+  }
+  .nav-brand { font-weight: 700; font-size: 16px; }
+  .nav-sub { font-size: 11px; color: var(--text-muted); }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+  .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,.04); }
+  .nav-links a.active { color: var(--accent-light); background: rgba(59,130,246,.08); }
+  .nav-cta { display: flex; align-items: center; gap: 8px; }
+  .btn-ghost { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,.03); cursor: pointer; }
+  .btn-primary { font-size: 13px; font-weight: 600; color: #fff; padding: 7px 16px; border-radius: 8px; background: linear-gradient(135deg,#3b82f6,#1d4ed8); border: 1px solid rgba(59,130,246,.4); box-shadow: 0 0 20px rgba(59,130,246,.3); cursor: pointer; white-space: nowrap; }
+  .cart-btn { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,255,255,.04); border: 1px solid var(--border); cursor: pointer; font-size: 17px; transition: background .15s; }
+  .cart-btn:hover { background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.3); }
+  .cart-badge { position: absolute; top: -5px; right: -5px; width: 16px; height: 16px; background: #ef4444; border-radius: 50%; font-size: 9px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); }
+
+  /* CRUMB + HEADER */
+  .page-header {
+    background: linear-gradient(180deg, rgba(59,130,246,.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 28px;
+  }
+  .crumb { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .crumb a { color: var(--accent-light); }
+  .crumb a:hover { text-decoration: underline; }
+  .crumb-sep { color: var(--text-muted); }
+  .page-hd-row { display: flex; align-items: flex-end; justify-content: space-between; }
+  .page-title { font-size: clamp(24px,3vw,36px); font-weight: 800; letter-spacing: -.03em; }
+  .page-desc { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
+  .page-hd-right { display: flex; align-items: center; gap: 12px; }
+  .sort-label { font-size: 12px; color: var(--text-muted); }
+  .sort-select {
+    font-size: 13px; font-weight: 500; color: var(--text-primary);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 12px; cursor: pointer; outline: none;
+  }
+  .view-btns { display: flex; gap: 4px; }
+  .view-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,.03); cursor: pointer; font-size: 14px; transition: all .15s; }
+  .view-btn.active, .view-btn:hover { background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.3); }
+
+  /* LAYOUT */
+  .shop-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; max-width: 1440px; margin: 0 auto; padding: 40px 48px 80px; }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  }
+  .filter-hd {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; cursor: pointer; user-select: none;
+  }
+  .filter-hd-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .filter-hd-arrow { font-size: 10px; color: var(--text-muted); transition: transform .2s; }
+  .filter-hd-arrow.open { transform: rotate(180deg); }
+  .filter-body { padding: 0 16px 14px; }
+  .filter-option { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; }
+  .filter-option:hover .fcheck { border-color: var(--accent-light); }
+  .fcheck {
+    width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border);
+    background: rgba(255,255,255,.03); flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .fcheck.checked { background: var(--accent); border-color: var(--accent); }
+  .fcheck.checked::after { content: '✓'; font-size: 9px; color: #fff; }
+  .filter-option-name { font-size: 13px; color: var(--text-secondary); }
+  .filter-option-count { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+  .price-range { padding: 4px 0; }
+  .price-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .price-input {
+    width: 100%; font-size: 13px; color: var(--text-primary);
+    background: rgba(255,255,255,.04); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; outline: none;
+  }
+  .price-input:focus { border-color: rgba(59,130,246,.4); }
+  .price-input::placeholder { color: var(--text-muted); }
+  .rating-row { display: flex; align-items: center; gap: 8px; padding: 7px 0; cursor: pointer; }
+  .stars-display { color: #fbbf24; font-size: 13px; }
+  .rating-label { font-size: 13px; color: var(--text-secondary); }
+  .filter-clear { font-size: 12px; color: var(--accent-light); cursor: pointer; padding: 10px 16px 0; display: block; }
+  .filter-clear:hover { text-decoration: underline; }
+
+  /* ACTIVE FILTERS */
+  .active-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .active-tag {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500; color: var(--accent-light);
+    background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.25);
+    border-radius: 20px; padding: 4px 10px 4px 12px; cursor: pointer;
+  }
+  .active-tag:hover { background: rgba(59,130,246,.18); }
+  .active-tag-x { font-size: 14px; opacity: .7; }
+  .results-count { font-size: 13px; color: var(--text-muted); margin-left: auto; }
+
+  /* PRODUCT GRID */
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .prod-card {
+    background: linear-gradient(145deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    cursor: pointer; transition: transform .2s, border-color .2s, box-shadow .2s;
+    position: relative;
+  }
+  .prod-card:hover { transform: translateY(-4px); border-color: rgba(59,130,246,.35); box-shadow: 0 20px 48px rgba(0,0,0,.45); }
+  .prod-thumb {
+    height: 160px; display: flex; align-items: center; justify-content: center;
+    font-size: 56px; position: relative; overflow: hidden;
+    transition: background .2s;
+  }
+  .prod-thumb::after {
+    content: 'Quick View'; position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(6,10,20,.9); font-size: 12px; font-weight: 700; color: var(--accent-light);
+    text-align: center; padding: 10px; transform: translateY(100%); transition: transform .2s;
+  }
+  .prod-card:hover .prod-thumb::after { transform: translateY(0); }
+  .prod-badge-group { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .pbadge {
+    font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 4px; width: fit-content;
+  }
+  .pbadge.bestseller { background: rgba(245,158,11,.85); color: #fff; }
+  .pbadge.new { background: rgba(16,185,129,.85); color: #fff; }
+  .pbadge.sale { background: rgba(239,68,68,.85); color: #fff; }
+  .pbadge.bundle { background: rgba(139,92,246,.85); color: #fff; }
+  .wishlist-btn {
+    position: absolute; top: 10px; right: 10px; width: 28px; height: 28px;
+    background: rgba(6,10,20,.7); border-radius: 50%; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+    opacity: 0; transition: opacity .2s, background .15s; cursor: pointer;
+  }
+  .prod-card:hover .wishlist-btn { opacity: 1; }
+  .wishlist-btn:hover { background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.4); }
+  .prod-body { padding: 14px 16px 16px; }
+  .prod-cat { font-size: 10px; font-weight: 700; color: var(--accent-light); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
+  .prod-name { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.35; }
+  .prod-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+  .prod-formats { display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
+  .format-tag {
+    font-size: 9px; font-weight: 600; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px;
+    background: rgba(255,255,255,.03);
+  }
+  .prod-foot { display: flex; align-items: center; justify-content: space-between; }
+  .prod-price-group { display: flex; align-items: baseline; gap: 6px; }
+  .prod-price { font-size: 17px; font-weight: 800; color: var(--text-primary); }
+  .prod-orig { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+  .prod-stars { font-size: 10px; color: #fbbf24; }
+  .prod-reviews { font-size: 10px; color: var(--text-muted); }
+  .add-btn {
+    font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 8px;
+    background: linear-gradient(135deg, rgba(59,130,246,.2), rgba(29,78,216,.1));
+    color: var(--accent-light); border: 1px solid rgba(59,130,246,.3); cursor: pointer;
+    transition: all .15s;
+  }
+  .add-btn:hover { background: linear-gradient(135deg, rgba(59,130,246,.35), rgba(29,78,216,.25)); box-shadow: 0 0 16px rgba(59,130,246,.25); }
+
+  /* PAGINATION */
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 48px 0 0; }
+  .page-num {
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-secondary);
+    transition: all .15s;
+  }
+  .page-num:hover { border-color: rgba(59,130,246,.3); color: var(--accent-light); }
+  .page-num.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(59,130,246,.35); }
+  .page-dots { font-size: 13px; color: var(--text-muted); padding: 0 4px; }
+
+  /* FOOTER */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; max-width: 1280px; margin: 0 auto 40px; }
+  .footer-brand p { font-size: 13px; color: var(--text-muted); margin-top: 12px; line-height: 1.6; max-width: 280px; }
+  .footer-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .footer-bottom-text { font-size: 12px; color: var(--text-muted); }
+
+  /* ── PRODUCT DETAIL MODAL ── */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(6,10,20,.85); backdrop-filter: blur(8px);
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-sheet {
+    width: 100%; max-width: 900px; max-height: 90vh;
+    background: var(--elevated); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 24px 24px 0 0; overflow: hidden;
+    transform: translateY(100%); transition: transform .35s cubic-bezier(.16,1,.3,1);
+    display: flex; flex-direction: column;
+  }
+  .modal-backdrop.open .modal-sheet { transform: translateY(0); }
+  .modal-drag { width: 40px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.15); margin: 12px auto 0; flex-shrink: 0; cursor: pointer; }
+  .modal-scroll { overflow-y: auto; flex: 1; padding: 24px 32px 40px; }
+  .modal-scroll::-webkit-scrollbar { width: 5px; }
+  .modal-scroll::-webkit-scrollbar-track { background: transparent; }
+  .modal-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+  .modal-close {
+    position: absolute; top: 16px; right: 20px; width: 32px; height: 32px;
+    border-radius: 50%; background: rgba(255,255,255,.08); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer; color: var(--text-secondary); z-index: 10;
+    transition: background .15s;
+  }
+  .modal-close:hover { background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.4); }
+  .modal-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .modal-preview {
+    aspect-ratio: 1; border-radius: 18px; border: 1px solid rgba(255,255,255,.08);
+    display: flex; align-items: center; justify-content: center; font-size: 96px;
+    position: relative; overflow: hidden;
+  }
+  .modal-preview-label {
+    position: absolute; bottom: 12px; left: 0; right: 0; text-align: center;
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); letter-spacing: .06em;
+  }
+  .modal-preview-badge {
+    position: absolute; top: 14px; left: 14px;
+    font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+  }
+  .modal-right { display: flex; flex-direction: column; gap: 16px; }
+  .modal-cat { font-size: 11px; font-weight: 700; color: var(--accent-light); letter-spacing: .1em; text-transform: uppercase; }
+  .modal-title { font-size: clamp(22px,2.5vw,28px); font-weight: 800; letter-spacing: -.025em; line-height: 1.2; }
+  .modal-rating { display: flex; align-items: center; gap: 8px; }
+  .modal-stars { color: #fbbf24; font-size: 14px; }
+  .modal-review-ct { font-size: 12px; color: var(--text-muted); }
+  .modal-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+  .modal-includes { }
+  .modal-includes h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 10px; }
+  .modal-includes ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .modal-includes li { font-size: 13px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 8px; }
+  .modal-includes li::before { content: '✓'; color: #10b981; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .modal-formats { display: flex; gap: 6px; flex-wrap: wrap; }
+  .modal-fmt {
+    font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border); color: var(--text-secondary);
+  }
+  .modal-price-row { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); }
+  .modal-price-left { display: flex; align-items: baseline; gap: 10px; }
+  .modal-price-main { font-size: 32px; font-weight: 800; color: var(--text-primary); }
+  .modal-price-orig { font-size: 16px; color: var(--text-muted); text-decoration: line-through; }
+  .modal-price-save { font-size: 12px; font-weight: 700; color: #10b981; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-btn-add {
+    flex: 1; padding: 13px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;
+    border: 1px solid rgba(59,130,246,.4); box-shadow: 0 0 24px rgba(59,130,246,.35);
+    cursor: pointer; transition: box-shadow .15s; text-align: center;
+  }
+  .modal-btn-add:hover { box-shadow: 0 0 36px rgba(59,130,246,.5); }
+  .modal-btn-preview {
+    padding: 13px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
+    background: rgba(255,255,255,.05); color: var(--text-secondary);
+    border: 1px solid var(--border); cursor: pointer; transition: all .15s;
+  }
+  .modal-btn-preview:hover { background: rgba(255,255,255,.09); color: var(--text-primary); }
+  .modal-trust { display: flex; align-items: center; gap: 20px; }
+  .modal-trust-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+  .modal-trust-icon { font-size: 14px; }
+
+  @media(max-width:900px){
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    .page-header { padding: 24px 20px 20px; }
+    .shop-layout { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+    .sidebar { display: none; }
+    .product-grid { grid-template-columns: repeat(2,1fr); }
+    .modal-inner { grid-template-columns: 1fr; }
+    .modal-scroll { padding: 20px 20px 32px; }
+    footer { padding: 32px 20px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  }
+  @media(max-width:540px){
+    .product-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">Q</div>
+    <div><div class="nav-brand">Quorbz</div><div class="nav-sub">Digital Store</div></div>
+  </div>
+  <div class="nav-links">
+    <a href="v1-store.html">Home</a>
+    <a href="v1-browse.html" class="active">Products</a>
+    <a href="#">Bundles</a>
+    <a href="#">Bestsellers</a>
+    <a href="#">Free Samples</a>
+  </div>
+  <div class="nav-cta">
+    <div class="cart-btn" id="cartBtn">🛒<span class="cart-badge" id="cartCount">0</span></div>
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Get 5 Free →</button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="crumb">
+    <a href="v1-store.html">Store</a>
+    <span class="crumb-sep">›</span>
+    <a href="v1-browse.html">Browse All</a>
+    <span class="crumb-sep">›</span>
+    <span>Productivity Templates</span>
+  </div>
+  <div class="page-hd-row">
+    <div>
+      <h1 class="page-title">📋 Productivity Templates</h1>
+      <p class="page-desc">Premium planners, trackers, dashboards, and workflow systems — all instant download.</p>
+    </div>
+    <div class="page-hd-right">
+      <span class="sort-label">Sort:</span>
+      <select class="sort-select">
+        <option>Best Selling</option>
+        <option>Newest</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+        <option>Top Rated</option>
+      </select>
+      <div class="view-btns">
+        <div class="view-btn active" title="Grid view">⊞</div>
+        <div class="view-btn" title="List view">☰</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP LAYOUT -->
+<div class="shop-layout">
+
+  <!-- SIDEBAR FILTERS -->
+  <aside class="sidebar">
+
+    <!-- Category -->
+    <div class="filter-group">
+      <div class="filter-hd" onclick="toggleFilter(this)">
+        <span class="filter-hd-name">Category</span>
+        <span class="filter-hd-arrow open">▲</span>
+      </div>
+      <div class="filter-body">
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck checked"></div>
+          <span class="filter-option-name">Productivity Templates</span>
+          <span class="filter-option-count">68</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Social Media Kits</span>
+          <span class="filter-option-count">94</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Business Documents</span>
+          <span class="filter-option-count">52</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Canva Bundles</span>
+          <span class="filter-option-count">41</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Digital Planners</span>
+          <span class="filter-option-count">37</span>
+        </label>
+      </div>
+      <a class="filter-clear" href="#">View all categories</a>
+    </div>
+
+    <!-- Price -->
+    <div class="filter-group">
+      <div class="filter-hd" onclick="toggleFilter(this)">
+        <span class="filter-hd-name">Price Range</span>
+        <span class="filter-hd-arrow open">▲</span>
+      </div>
+      <div class="filter-body">
+        <div class="price-range">
+          <div class="price-inputs">
+            <input class="price-input" type="number" placeholder="$ Min" />
+            <input class="price-input" type="number" placeholder="$ Max" />
+          </div>
+        </div>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Under $5</span>
+          <span class="filter-option-count">14</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck checked"></div>
+          <span class="filter-option-name">$5 – $15</span>
+          <span class="filter-option-count">29</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">$15 – $30</span>
+          <span class="filter-option-count">18</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">$30 – $50</span>
+          <span class="filter-option-count">7</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Format -->
+    <div class="filter-group">
+      <div class="filter-hd" onclick="toggleFilter(this)">
+        <span class="filter-hd-name">File Format</span>
+        <span class="filter-hd-arrow open">▲</span>
+      </div>
+      <div class="filter-body">
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck checked"></div>
+          <span class="filter-option-name">Notion</span>
+          <span class="filter-option-count">31</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck checked"></div>
+          <span class="filter-option-name">PDF</span>
+          <span class="filter-option-count">52</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Canva</span>
+          <span class="filter-option-count">28</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Excel / Google Sheets</span>
+          <span class="filter-option-count">19</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">PowerPoint / Google Slides</span>
+          <span class="filter-option-count">11</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="filter-group">
+      <div class="filter-hd" onclick="toggleFilter(this)">
+        <span class="filter-hd-name">Minimum Rating</span>
+        <span class="filter-hd-arrow open">▲</span>
+      </div>
+      <div class="filter-body">
+        <div class="rating-row" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="stars-display">★★★★★</span>
+          <span class="rating-label">5.0</span>
+          <span class="filter-option-count">22</span>
+        </div>
+        <div class="rating-row" onclick="toggleCheck(this)">
+          <div class="fcheck checked"></div>
+          <span class="stars-display">★★★★☆</span>
+          <span class="rating-label">4.0+</span>
+          <span class="filter-option-count">51</span>
+        </div>
+        <div class="rating-row" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="stars-display">★★★☆☆</span>
+          <span class="rating-label">3.0+</span>
+          <span class="filter-option-count">64</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- License -->
+    <div class="filter-group">
+      <div class="filter-hd" onclick="toggleFilter(this)">
+        <span class="filter-hd-name">License</span>
+        <span class="filter-hd-arrow open">▲</span>
+      </div>
+      <div class="filter-body">
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck checked"></div>
+          <span class="filter-option-name">Personal Use</span>
+          <span class="filter-option-count">68</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Commercial License</span>
+          <span class="filter-option-count">34</span>
+        </label>
+        <label class="filter-option" onclick="toggleCheck(this)">
+          <div class="fcheck"></div>
+          <span class="filter-option-name">Extended License</span>
+          <span class="filter-option-count">12</span>
+        </label>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- PRODUCT AREA -->
+  <div>
+
+    <!-- Active Filters -->
+    <div class="active-filters">
+      <span class="active-tag" onclick="this.remove()">Productivity Templates <span class="active-tag-x">×</span></span>
+      <span class="active-tag" onclick="this.remove()">$5–$15 <span class="active-tag-x">×</span></span>
+      <span class="active-tag" onclick="this.remove()">Notion <span class="active-tag-x">×</span></span>
+      <span class="active-tag" onclick="this.remove()">PDF <span class="active-tag-x">×</span></span>
+      <span class="active-tag" onclick="this.remove()">4.0+ Rating <span class="active-tag-x">×</span></span>
+      <span class="results-count">68 results</span>
+    </div>
+
+    <!-- Grid -->
+    <div class="product-grid" id="productGrid">
+
+      <div class="prod-card" onclick="openModal(0)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1e3a5f,#0f2744)">
+          📋
+          <div class="prod-badge-group"><span class="pbadge bestseller">Bestseller</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Ultimate Notion Life OS Dashboard</div>
+          <div class="prod-meta">Complete life management system · 12 pages</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">PDF Guide</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$12</span><span class="prod-orig">$24</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (847)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(1)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1a2e1a,#0d1f0d)">
+          📊
+          <div class="prod-badge-group"><span class="pbadge new">New</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">AI Content Creation Planner 2025</div>
+          <div class="prod-meta">90-day content strategy + editorial calendar</div>
+          <div class="prod-formats">
+            <span class="format-tag">PDF</span><span class="format-tag">Notion</span><span class="format-tag">Google Sheets</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$9</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (213)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(2)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#2e1a2e,#1f0d1f)">
+          🎯
+          <div class="prod-badge-group"><span class="pbadge bundle">Bundle</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Goal Crusher System — Mega Bundle</div>
+          <div class="prod-meta">Annual planner + weekly + daily + habit tracker</div>
+          <div class="prod-formats">
+            <span class="format-tag">PDF</span><span class="format-tag">Canva</span><span class="format-tag">Notion</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$19</span><span class="prod-orig">$48</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (1,204)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(3)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1a1a2e,#0d0d1f)">
+          💼
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Freelancer Client Management System</div>
+          <div class="prod-meta">Proposals · invoices · project tracker · CRM</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">PDF</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$14</span></div>
+              <div><span class="prod-stars">★★★★☆</span><span class="prod-reviews"> (388)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(4)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#2e1a1a,#1f0d0d)">
+          🧠
+          <div class="prod-badge-group"><span class="pbadge sale">–40%</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Second Brain Starter Pack</div>
+          <div class="prod-meta">Zettelkasten + PARA + GTD all-in-one</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$7</span><span class="prod-orig">$12</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (562)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(5)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1a2e2e,#0d1f1f)">
+          📅
+          <div class="prod-badge-group"><span class="pbadge bestseller">Bestseller</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Weekly Notion Planner — Minimalist Pro</div>
+          <div class="prod-meta">Time-blocking · focus sessions · reviews</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">PDF</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$8</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (731)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(6)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#2e2a1a,#1f1b0d)">
+          📈
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Business Dashboard & KPI Tracker</div>
+          <div class="prod-meta">Revenue · expenses · OKRs · team metrics</div>
+          <div class="prod-formats">
+            <span class="format-tag">Google Sheets</span><span class="format-tag">Excel</span><span class="format-tag">Notion</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$16</span><span class="prod-orig">$22</span></div>
+              <div><span class="prod-stars">★★★★☆</span><span class="prod-reviews"> (294)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(7)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1e1a2e,#130d1f)">
+          🚀
+          <div class="prod-badge-group"><span class="pbadge new">New</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Startup Operating System v2.0</div>
+          <div class="prod-meta">Roadmap · hiring · OKRs · investor updates</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">PDF</span><span class="format-tag">Slides</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$24</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (117)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(8)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1a2a1a,#0d1a0d)">
+          🌿
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Wellness & Habit Tracker System</div>
+          <div class="prod-meta">Sleep · fitness · mood · mindfulness · nutrition</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">PDF</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$6</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (489)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(9)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#2e1e1a,#1f120d)">
+          ✍️
+          <div class="prod-badge-group"><span class="pbadge bestseller">Bestseller</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Writer's Notion Studio — Full Pack</div>
+          <div class="prod-meta">Story bible · drafts · outlines · publishing tracker</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$11</span><span class="prod-orig">$18</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (672)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(10)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#1a1e2e,#0d1220)">
+          💰
+          <div class="prod-badge-group"><span class="pbadge new">New</span></div>
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Personal Finance Command Center</div>
+          <div class="prod-meta">Budgeting · net worth · savings goals · debt payoff</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">Google Sheets</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$13</span></div>
+              <div><span class="prod-stars">★★★★★</span><span class="prod-reviews"> (341)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="openModal(11)">
+        <div class="prod-thumb" style="background:linear-gradient(135deg,#2e2e1a,#1f1f0d)">
+          🎓
+          <div class="wishlist-btn">♡</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Productivity</div>
+          <div class="prod-name">Student Success Vault</div>
+          <div class="prod-meta">Study system · notes · exam prep · semester planner</div>
+          <div class="prod-formats">
+            <span class="format-tag">Notion</span><span class="format-tag">PDF</span>
+          </div>
+          <div class="prod-foot">
+            <div>
+              <div class="prod-price-group"><span class="prod-price">$5</span></div>
+              <div><span class="prod-stars">★★★★☆</span><span class="prod-reviews"> (208)</span></div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart()">+ Cart</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /product-grid -->
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <div class="page-num active">1</div>
+      <div class="page-num">2</div>
+      <div class="page-num">3</div>
+      <span class="page-dots">…</span>
+      <div class="page-num">6</div>
+    </div>
+
+  </div><!-- /product area -->
+
+</div><!-- /shop-layout -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff">Q</div>
+        <span style="font-weight:700;font-size:16px">Quorbz</span>
+      </div>
+      <p>Premium AI-crafted digital products. Instant download, commercial license included on every purchase.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Store</h4>
+      <a href="v1-browse.html">Browse All</a>
+      <a href="#">Bestsellers</a>
+      <a href="#">New Arrivals</a>
+      <a href="#">Bundles</a>
+      <a href="#">Free Samples</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Refund Policy</a>
+      <a href="#">License Info</a>
+      <a href="#">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="index.html">About Quorbz</a>
+      <a href="#">Blog</a>
+      <a href="#">Affiliate Program</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-bottom-text">© 2025 Quorbz LLC · All rights reserved</span>
+    <span class="footer-bottom-text">⚡ Powered by Quorbz AI</span>
+  </div>
+</footer>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-drag" onclick="closeModal()"></div>
+    <div style="position:relative">
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-scroll">
+      <div class="modal-inner">
+        <div>
+          <div class="modal-preview" id="modalPreview" style="background:linear-gradient(135deg,#1e3a5f,#0f2744)">
+            <span id="modalEmoji" style="font-size:96px">📋</span>
+            <div class="modal-preview-label">PREVIEW</div>
+            <div class="modal-preview-badge bestseller" id="modalBadge" style="background:rgba(245,158,11,.85);color:#fff">Bestseller</div>
+          </div>
+          <!-- Thumbnail strip -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px">
+            <div style="aspect-ratio:1;border-radius:10px;border:2px solid var(--accent);background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(29,78,216,.08));display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer" id="t0">📋</div>
+            <div style="aspect-ratio:1;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer" id="t1">📄</div>
+            <div style="aspect-ratio:1;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer" id="t2">🗂</div>
+            <div style="aspect-ratio:1;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer" id="t3">🗃</div>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <div class="modal-cat" id="modalCat">Productivity</div>
+          <h2 class="modal-title" id="modalTitle">Ultimate Notion Life OS Dashboard</h2>
+          <div class="modal-rating">
+            <span class="modal-stars" id="modalStars">★★★★★</span>
+            <span id="modalReviews" class="modal-review-ct">847 reviews</span>
+            <span style="font-size:12px;color:#10b981;font-weight:600">✓ Verified purchases</span>
+          </div>
+          <p class="modal-desc" id="modalDesc">
+            A comprehensive Notion system to manage every area of your life in one dashboard. Includes health, finances, projects, goals, daily journaling, habit tracking, and a full weekly review system. Loved by 800+ buyers.
+          </p>
+          <div class="modal-includes">
+            <h4>What's included</h4>
+            <ul id="modalIncludes">
+              <li>Life OS Master Dashboard (12 linked databases)</li>
+              <li>Daily, weekly &amp; monthly review templates</li>
+              <li>Goal tracking system with milestone tracker</li>
+              <li>Habit tracker with streak counter</li>
+              <li>Setup guide + video walkthrough (15 min)</li>
+              <li>Free lifetime updates included</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px">File formats</div>
+            <div class="modal-formats" id="modalFormats">
+              <span class="modal-fmt">Notion Template</span>
+              <span class="modal-fmt">PDF Guide</span>
+              <span class="modal-fmt">Quick-Start Checklist</span>
+            </div>
+          </div>
+          <div class="modal-price-row">
+            <div class="modal-price-left">
+              <span class="modal-price-main" id="modalPrice">$12</span>
+              <span class="modal-price-orig" id="modalOrig">$24</span>
+              <span class="modal-price-save" id="modalSave">Save 50%</span>
+            </div>
+            <span style="font-size:12px;color:var(--text-muted)">⚡ Instant download</span>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn-add" onclick="addToCart();closeModal()">🛒 Add to Cart</button>
+            <button class="modal-btn-preview">👁 Preview</button>
+          </div>
+          <div class="modal-trust">
+            <div class="modal-trust-item"><span class="modal-trust-icon">🔒</span>Secure checkout</div>
+            <div class="modal-trust-item"><span class="modal-trust-icon">⚡</span>Instant delivery</div>
+            <div class="modal-trust-item"><span class="modal-trust-icon">↩</span>30-day guarantee</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── FILTER TOGGLE ── */
+function toggleFilter(hd) {
+  const body = hd.nextElementSibling;
+  const arrow = hd.querySelector('.filter-hd-arrow');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  arrow.classList.toggle('open', !open);
+}
+function toggleCheck(el) {
+  const chk = el.querySelector('.fcheck');
+  if (chk) chk.classList.toggle('checked');
+}
+
+/* ── CART ── */
+let cartCount = 0;
+function addToCart() {
+  cartCount++;
+  const badge = document.getElementById('cartCount');
+  badge.textContent = cartCount;
+  badge.style.background = '#10b981';
+  setTimeout(() => badge.style.background = '#ef4444', 600);
+}
+
+/* ── PRODUCT DATA ── */
+const products = [
+  { emoji:'📋', bg:'linear-gradient(135deg,#1e3a5f,#0f2744)', badge:'Bestseller', badgeBg:'rgba(245,158,11,.85)', cat:'Productivity', title:'Ultimate Notion Life OS Dashboard', stars:'★★★★★', reviews:'847', price:'$12', orig:'$24', save:'Save 50%', desc:'A comprehensive Notion system to manage every area of your life in one dashboard. Includes health, finances, projects, goals, daily journaling, habit tracking, and a full weekly review system. Loved by 800+ buyers.', includes:['Life OS Master Dashboard (12 linked databases)','Daily, weekly & monthly review templates','Goal tracking system with milestone tracker','Habit tracker with streak counter','Setup guide + video walkthrough (15 min)','Free lifetime updates included'], formats:['Notion Template','PDF Guide','Quick-Start Checklist'] },
+  { emoji:'📊', bg:'linear-gradient(135deg,#1a2e1a,#0d1f0d)', badge:'New', badgeBg:'rgba(16,185,129,.85)', cat:'Productivity', title:'AI Content Creation Planner 2025', stars:'★★★★★', reviews:'213', price:'$9', orig:'', save:'', desc:'Plan 90 days of content in one afternoon. Includes editorial calendar, post scheduler, engagement tracker, and AI prompt templates for every major platform.', includes:['90-day editorial calendar','Daily content scheduling blocks','Platform-specific format guides','AI prompt library (150+ prompts)','Monthly analytics review template'], formats:['PDF','Notion Template','Google Sheets'] },
+  { emoji:'🎯', bg:'linear-gradient(135deg,#2e1a2e,#1f0d1f)', badge:'Bundle', badgeBg:'rgba(139,92,246,.85)', cat:'Productivity', title:'Goal Crusher System — Mega Bundle', stars:'★★★★★', reviews:'1,204', price:'$19', orig:'$48', save:'Save 60%', desc:'The complete goal-setting ecosystem. Annual planning, quarterly reviews, monthly sprints, weekly check-ins, and daily intention setting — all connected in Notion and available as beautiful printable PDFs.', includes:['Annual goal planner (Notion + printable PDF)','Quarterly review workbook','Monthly sprint planner','Weekly habit tracker','Daily intention journal (365 prompts)','Bonus: Vision board Canva template'], formats:['PDF','Canva Template','Notion Template'] },
+  { emoji:'💼', bg:'linear-gradient(135deg,#1a1a2e,#0d0d1f)', badge:'', badgeBg:'', cat:'Productivity', title:'Freelancer Client Management System', stars:'★★★★☆', reviews:'388', price:'$14', orig:'', save:'', desc:'Stop losing track of clients, proposals, and invoices. This Notion CRM was built by a 6-figure freelancer — includes onboarding checklist, project tracker, and automated invoice generator.', includes:['Client CRM with lead pipeline','Project tracker (kanban + table)','Proposal & contract templates','Invoice tracker with revenue dashboard','Onboarding email sequence templates'], formats:['Notion Template','PDF'] },
+  { emoji:'🧠', bg:'linear-gradient(135deg,#2e1a1a,#1f0d0d)', badge:'-40%', badgeBg:'rgba(239,68,68,.85)', cat:'Productivity', title:'Second Brain Starter Pack', stars:'★★★★★', reviews:'562', price:'$7', orig:'$12', save:'Save 40%', desc:'Implement Tiago Forte\'s Building a Second Brain methodology in Notion. Includes full PARA system setup, Zettelkasten notes database, project management, and GTD inbox for instant capture.', includes:['PARA folder system pre-configured','Zettelkasten notes database','GTD inbox + weekly review','Resource & reading list tracker','Video setup guide (20 min)'], formats:['Notion Template'] },
+  { emoji:'📅', bg:'linear-gradient(135deg,#1a2e2e,#0d1f1f)', badge:'Bestseller', badgeBg:'rgba(245,158,11,.85)', cat:'Productivity', title:'Weekly Notion Planner — Minimalist Pro', stars:'★★★★★', reviews:'731', price:'$8', orig:'', save:'', desc:'A clean, distraction-free weekly planning system. Morning routine, time-blocking, deep work sessions, evening review, and a simple weekly recap — nothing extra.', includes:['7-day time-block template','Morning & evening routine sections','Deep work session tracker','Weekly wins & lessons log','Printable PDF version included'], formats:['Notion Template','PDF'] },
+  { emoji:'📈', bg:'linear-gradient(135deg,#2e2a1a,#1f1b0d)', badge:'', badgeBg:'', cat:'Productivity', title:'Business Dashboard & KPI Tracker', stars:'★★★★☆', reviews:'294', price:'$16', orig:'$22', save:'Save 27%', desc:'Track every metric that matters. Revenue, expenses, team performance, OKRs, and operational health — all in one Google Sheets dashboard with auto-updating charts.', includes:['Revenue & expense tracker','OKR progress dashboard','Team performance scorecards','Monthly P&L auto-calculation','Google Sheets + Notion version'], formats:['Google Sheets','Excel','Notion Template'] },
+  { emoji:'🚀', bg:'linear-gradient(135deg,#1e1a2e,#130d1f)', badge:'New', badgeBg:'rgba(16,185,129,.85)', cat:'Productivity', title:'Startup Operating System v2.0', stars:'★★★★★', reviews:'117', price:'$24', orig:'', save:'', desc:'Run your whole startup out of Notion. Product roadmap, hiring pipeline, OKR tracker, investor update templates, team wiki, and competitive intelligence database — all pre-built and ready to launch.', includes:['Product roadmap (timeline + kanban)','Hiring pipeline & onboarding kit','OKR tracker with check-in reminders','Investor update template library','Competitive analysis database','Team handbook skeleton'], formats:['Notion Template','PDF','Slides'] },
+  { emoji:'🌿', bg:'linear-gradient(135deg,#1a2a1a,#0d1a0d)', badge:'', badgeBg:'', cat:'Productivity', title:'Wellness & Habit Tracker System', stars:'★★★★★', reviews:'489', price:'$6', orig:'', save:'', desc:'A holistic wellness dashboard that tracks sleep, fitness, mood, mindfulness, nutrition, and water intake — all in one beautiful Notion workspace with monthly trend charts.', includes:['Sleep quality tracker','Workout log + progress photos','Mood & energy journal','Mindfulness session log','Nutrition & water intake tracker','Monthly wellness report'], formats:['Notion Template','PDF'] },
+  { emoji:'✍️', bg:'linear-gradient(135deg,#2e1e1a,#1f120d)', badge:'Bestseller', badgeBg:'rgba(245,158,11,.85)', cat:'Productivity', title:"Writer's Notion Studio — Full Pack", stars:'★★★★★', reviews:'672', price:'$11', orig:'$18', save:'Save 39%', desc:"Every writer's dream workspace. Story bible, character sheets, scene outlines, draft tracker, submission log, and publishing checklist — organized in a beautiful dark-mode Notion workspace.", includes:['Story bible & world-building database','Character & location sheets','Chapter outline & scene tracker','Draft version control system','Query & submission tracker','Publishing checklist + launch plan'], formats:['Notion Template'] },
+  { emoji:'💰', bg:'linear-gradient(135deg,#1a1e2e,#0d1220)', badge:'New', badgeBg:'rgba(16,185,129,.85)', cat:'Productivity', title:'Personal Finance Command Center', stars:'★★★★★', reviews:'341', price:'$13', orig:'', save:'', desc:'Take full control of your money. Monthly budgeting, net worth tracking, savings goals, debt payoff calculator, investment tracker, and subscription audit — everything auto-linked in Notion.', includes:['Monthly budget planner','Net worth tracker (live updates)','Savings goals dashboard','Debt snowball/avalanche calculator','Investment portfolio tracker','Subscription audit checklist'], formats:['Notion Template','Google Sheets'] },
+  { emoji:'🎓', bg:'linear-gradient(135deg,#2e2e1a,#1f1f0d)', badge:'', badgeBg:'', cat:'Productivity', title:'Student Success Vault', stars:'★★★★☆', reviews:'208', price:'$5', orig:'', save:'', desc:"Built for university students who are serious about their GPA. Semester planner, course hub, lecture notes system, exam prep tracker, and assignment calendar — all connected so nothing falls through the cracks.", includes:['Semester course dashboard','Lecture notes database (Cornell + outline)','Assignment calendar with priority flags','Exam prep countdown tracker','Study session time-logger','GPA calculator'], formats:['Notion Template','PDF'] },
+];
+
+/* ── MODAL ── */
+function openModal(idx) {
+  const p = products[idx];
+  document.getElementById('modalEmoji').textContent = p.emoji;
+  document.getElementById('modalPreview').style.background = p.bg;
+  document.getElementById('modalBadge').textContent = p.badge;
+  document.getElementById('modalBadge').style.background = p.badgeBg;
+  document.getElementById('modalBadge').style.display = p.badge ? '' : 'none';
+  document.getElementById('modalCat').textContent = p.cat;
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalStars').textContent = p.stars;
+  document.getElementById('modalReviews').textContent = p.reviews + ' reviews';
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalPrice').textContent = p.price;
+  document.getElementById('modalOrig').textContent = p.orig;
+  document.getElementById('modalOrig').style.display = p.orig ? '' : 'none';
+  document.getElementById('modalSave').textContent = p.save;
+  document.getElementById('modalSave').style.display = p.save ? '' : 'none';
+  // thumbs
+  for (let i=0;i<4;i++){
+    const el = document.getElementById('t'+i);
+    if (el) el.textContent = i===0 ? p.emoji : ['📄','🗂','🗃'][i-1];
+  }
+  // includes
+  const ul = document.getElementById('modalIncludes');
+  ul.innerHTML = p.includes.map(x=>`<li>${x}</li>`).join('');
+  // formats
+  const fmts = document.getElementById('modalFormats');
+  fmts.innerHTML = p.formats.map(f=>`<span class="modal-fmt">${f}</span>`).join('');
+  // open
+  const bd = document.getElementById('modalBackdrop');
+  bd.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>

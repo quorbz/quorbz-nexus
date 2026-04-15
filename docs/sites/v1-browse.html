@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Products — Quorbz Store</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #3b82f6; --accent-light: #60a5fa; --accent-dark: #1d4ed8;
+    --bg: #060a14; --surface: #0b1120; --elevated: #111827;
+    --border: rgba(255,255,255,0.06); --border-accent: rgba(59,130,246,0.3);
+    --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #475569;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); }
+  a { text-decoration: none; color: inherit; }
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,10,20,0.88); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff; box-shadow: 0 0 16px rgba(59,130,246,0.35);
+  }
+  .nav-brand { font-weight: 700; font-size: 16px; }
+  .nav-sub { font-size: 11px; color: var(--text-muted); }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+  .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,.04); }
+  .nav-links a.active { color: var(--accent-light); background: rgba(59,130,246,.08); }
+  .nav-cta { display: flex; align-items: center; gap: 8px; }
+  .btn-ghost { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,.03); cursor: pointer; }
+  .btn-primary { font-size: 13px; font-weight: 600; color: #fff; padding: 7px 16px; border-radius: 8px; background: linear-gradient(135deg,#3b82f6,#1d4ed8); border: 1px solid rgba(59,130,246,.4); box-shadow: 0 0 20px rgba(59,130,246,.3); cursor: pointer; white-space: nowrap; }
+  .cart-btn { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,255,255,.04); border: 1px solid var(--border); cursor: pointer; font-size: 17px; }
+  .cart-badge { position: absolute; top: -5px; right: -5px; width: 16px; height: 16px; background: #ef4444; border-radius: 50%; font-size: 9px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); }
+
+  /* SEARCH HERO */
+  .browse-hero {
+    background: linear-gradient(180deg, rgba(59,130,246,.06) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 48px 48px;
+  }
+  .browse-hero-inner { max-width: 880px; margin: 0 auto; text-align: center; }
+  .browse-crumb { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .browse-crumb a { color: var(--accent-light); }
+  .browse-crumb a:hover { text-decoration: underline; }
+  .browse-title { font-size: clamp(32px,4vw,48px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
+  .browse-sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 32px; }
+  .search-wrap { position: relative; max-width: 640px; margin: 0 auto 20px; }
+  .search-input {
+    width: 100%; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px; padding: 16px 56px 16px 20px; font-size: 15px; color: var(--text-primary);
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { border-color: rgba(59,130,246,.45); box-shadow: 0 0 0 4px rgba(59,130,246,.08); }
+  .search-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--text-muted); }
+  .trending-chips { display: flex; align-items: center; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .trend-label { font-size: 12px; color: var(--text-muted); }
+  .chip {
+    font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    color: var(--text-secondary); cursor: pointer; transition: all .15s;
+  }
+  .chip:hover { background: rgba(59,130,246,.1); border-color: rgba(59,130,246,.3); color: var(--accent-light); }
+
+  /* STATS STRIP */
+  .stats-strip {
+    display: flex; align-items: center; justify-content: center; gap: 64px;
+    padding: 24px 48px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .strip-stat { text-align: center; }
+  .strip-val { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+  .strip-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* MAIN */
+  .main-wrap { max-width: 1280px; margin: 0 auto; padding: 64px 48px; }
+  .sec-hd { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+  .sec-hd-left { }
+  .sec-tag { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 8px; }
+  .sec-name { font-size: clamp(24px,2.5vw,32px); font-weight: 800; letter-spacing: -.025em; }
+  .sec-hd a { font-size: 13px; color: var(--accent-light); font-weight: 600; }
+
+  /* CATEGORY TILES */
+  .cat-grid-big { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 72px; }
+  .cat-tile {
+    position: relative; border-radius: 18px; overflow: hidden; cursor: pointer;
+    height: 260px; border: 1px solid var(--border);
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .cat-tile:hover { transform: translateY(-5px); box-shadow: 0 24px 60px rgba(0,0,0,.5); border-color: rgba(255,255,255,.12); }
+  .cat-tile-bg { position: absolute; inset: 0; }
+  .cat-tile-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-65%); font-size: 64px; filter: drop-shadow(0 4px 16px rgba(0,0,0,.4)); transition: transform .25s; }
+  .cat-tile:hover .cat-tile-icon { transform: translate(-50%,-70%) scale(1.1); }
+  .cat-tile-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 20px 20px 18px;
+    background: linear-gradient(0deg, rgba(6,10,20,.95) 0%, rgba(6,10,20,.7) 60%, transparent 100%);
+  }
+  .cat-tile-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .cat-tile-count { font-size: 11px; color: rgba(255,255,255,.55); }
+  .cat-tile-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: var(--accent-light);
+    margin-top: 8px; opacity: 0; transform: translateY(4px);
+    transition: opacity .2s, transform .2s;
+  }
+  .cat-tile:hover .cat-tile-cta { opacity: 1; transform: translateY(0); }
+
+  /* FEATURED ROW */
+  .featured-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 72px; }
+  .feat-card {
+    background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    cursor: pointer; transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .feat-card:hover { transform: translateY(-3px); border-color: rgba(59,130,246,.3); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+  .feat-thumb { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 40px; position: relative; }
+  .feat-badge { position: absolute; top: 8px; right: 8px; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(245,158,11,.85); color: #fff; }
+  .feat-info { padding: 12px; }
+  .feat-cat { font-size: 9px; font-weight: 700; color: var(--accent-light); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+  .feat-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.3; }
+  .feat-foot { display: flex; align-items: center; justify-content: space-between; }
+  .feat-price { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+  .feat-stars { font-size: 10px; color: #fbbf24; }
+
+  /* NEW ARRIVALS GRID */
+  .new-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .new-card {
+    background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    cursor: pointer; transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .new-card:hover { transform: translateY(-3px); border-color: rgba(59,130,246,.3); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+  .new-thumb { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
+  .new-badge { position: absolute; top: 10px; left: 10px; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,.85); color: #fff; }
+  .new-info { padding: 14px; }
+  .new-cat { font-size: 9px; font-weight: 700; color: var(--accent-light); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
+  .new-name { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+  .new-desc { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5; }
+  .new-foot { display: flex; align-items: center; justify-content: space-between; }
+  .new-price { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+  .new-add { font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px; background: rgba(59,130,246,.15); color: var(--accent-light); border: 1px solid rgba(59,130,246,.25); cursor: pointer; }
+
+  /* FOOTER */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; max-width: 1280px; margin: 0 auto 40px; }
+  .footer-brand p { font-size: 13px; color: var(--text-muted); margin-top: 12px; line-height: 1.6; max-width: 280px; }
+  .footer-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .footer-bottom-text { font-size: 12px; color: var(--text-muted); }
+
+  @media(max-width:900px){
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    .browse-hero { padding: 40px 20px 32px; }
+    .stats-strip { gap: 32px; padding: 20px; flex-wrap: wrap; }
+    .main-wrap { padding: 40px 20px; }
+    .cat-grid-big { grid-template-columns: repeat(2,1fr); }
+    .featured-row { grid-template-columns: repeat(2,1fr); }
+    .new-grid { grid-template-columns: repeat(2,1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">Q</div>
+    <div><div class="nav-brand">Quorbz</div><div class="nav-sub">Digital Store</div></div>
+  </div>
+  <div class="nav-links">
+    <a href="v1-store.html">Home</a>
+    <a href="v1-browse.html" class="active">Products</a>
+    <a href="#">Bundles</a>
+    <a href="#">Bestsellers</a>
+    <a href="#">Free Samples</a>
+  </div>
+  <div class="nav-cta">
+    <div class="cart-btn">🛒<span class="cart-badge">0</span></div>
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Get 5 Free →</button>
+  </div>
+</nav>
+
+<!-- SEARCH HERO -->
+<div class="browse-hero">
+  <div class="browse-hero-inner">
+    <div class="browse-crumb"><a href="v1-store.html">Store</a> &rsaquo; Browse All</div>
+    <h1 class="browse-title">Find Your Next Bestseller.</h1>
+    <p class="browse-sub">500+ premium digital products across 8 categories. Instant download, commercial license included.</p>
+    <div class="search-wrap">
+      <input class="search-input" type="text" placeholder="Search templates, planners, Canva kits…"/>
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="trending-chips">
+      <span class="trend-label">Trending:</span>
+      <span class="chip" onclick="location.href='v1-category.html'">Notion Templates</span>
+      <span class="chip" onclick="location.href='v1-category.html'">Instagram Packs</span>
+      <span class="chip" onclick="location.href='v1-category.html'">Business Proposals</span>
+      <span class="chip" onclick="location.href='v1-category.html'">Digital Planners</span>
+      <span class="chip" onclick="location.href='v1-category.html'">Resume Templates</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="strip-stat"><div class="strip-val">500+</div><div class="strip-lbl">Products</div></div>
+  <div class="strip-stat"><div class="strip-val">8</div><div class="strip-lbl">Categories</div></div>
+  <div class="strip-stat"><div class="strip-val">18,400+</div><div class="strip-lbl">Downloads</div></div>
+  <div class="strip-stat"><div class="strip-val">4.9★</div><div class="strip-lbl">Avg. Rating</div></div>
+  <div class="strip-stat"><div class="strip-val">Instant</div><div class="strip-lbl">Delivery</div></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- CATEGORIES -->
+  <div class="sec-hd">
+    <div class="sec-hd-left">
+      <div class="sec-tag">Browse by Category</div>
+      <div class="sec-name">What are you building today?</div>
+    </div>
+  </div>
+
+  <div class="cat-grid-big">
+    <!-- 1 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#0f2d5c,#1d4ed8,#1e3a8a)"></div>
+      <div class="cat-tile-icon">📊</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Productivity Templates</div>
+        <div class="cat-tile-count">147 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 2 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#4a044e,#c026d3,#9d174d)"></div>
+      <div class="cat-tile-icon">📱</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Social Media Kits</div>
+        <div class="cat-tile-count">94 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 3 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#042f2e,#0d9488,#065f46)"></div>
+      <div class="cat-tile-icon">💼</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Business Documents</div>
+        <div class="cat-tile-count">82 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 4 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#431407,#ea580c,#92400e)"></div>
+      <div class="cat-tile-icon">🖼️</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Wall Art & Printables</div>
+        <div class="cat-tile-count">126 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 5 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#1e1b4b,#6d28d9,#4c1d95)"></div>
+      <div class="cat-tile-icon">🎨</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Canva Bundles</div>
+        <div class="cat-tile-count">71 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 6 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#0c1445,#1e40af,#1e3a5f)"></div>
+      <div class="cat-tile-icon">📄</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Resume & CV Packs</div>
+        <div class="cat-tile-count">58 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 7 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#052e16,#16a34a,#064e3b)"></div>
+      <div class="cat-tile-icon">📅</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Digital Planners</div>
+        <div class="cat-tile-count">89 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+    <!-- 8 -->
+    <div class="cat-tile" onclick="location.href='v1-category.html'">
+      <div class="cat-tile-bg" style="background:linear-gradient(145deg,#1a0533,#9333ea,#6b21a8)"></div>
+      <div class="cat-tile-icon">📣</div>
+      <div class="cat-tile-overlay">
+        <div class="cat-tile-name">Marketing Materials</div>
+        <div class="cat-tile-count">63 products</div>
+        <div class="cat-tile-cta">Explore Category ›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BESTSELLERS -->
+  <div class="sec-hd">
+    <div class="sec-hd-left">
+      <div class="sec-tag">Bestsellers</div>
+      <div class="sec-name">What people can't stop buying.</div>
+    </div>
+    <a href="v1-category.html">View All →</a>
+  </div>
+
+  <div class="featured-row" style="margin-bottom:72px">
+    <div class="feat-card" onclick="location.href='v1-category.html'">
+      <div class="feat-thumb" style="background:linear-gradient(135deg,#0f2d5c,#1d4ed8)">📊<span class="feat-badge">🔥 #1</span></div>
+      <div class="feat-info">
+        <div class="feat-cat">Productivity</div>
+        <div class="feat-name">Ultimate Notion OS 2025</div>
+        <div class="feat-foot"><span class="feat-price">$29</span><span class="feat-stars">★★★★★</span></div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="location.href='v1-category.html'">
+      <div class="feat-thumb" style="background:linear-gradient(135deg,#4a044e,#c026d3)">📱<span class="feat-badge">🔥 #2</span></div>
+      <div class="feat-info">
+        <div class="feat-cat">Social Media</div>
+        <div class="feat-name">Instagram 2025 Mega Kit</div>
+        <div class="feat-foot"><span class="feat-price">$24</span><span class="feat-stars">★★★★★</span></div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="location.href='v1-category.html'">
+      <div class="feat-thumb" style="background:linear-gradient(135deg,#042f2e,#0d9488)">💼<span class="feat-badge">🔥 #3</span></div>
+      <div class="feat-info">
+        <div class="feat-cat">Business</div>
+        <div class="feat-name">Freelance Proposal Pack</div>
+        <div class="feat-foot"><span class="feat-price">$19</span><span class="feat-stars">★★★★★</span></div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="location.href='v1-category.html'">
+      <div class="feat-thumb" style="background:linear-gradient(135deg,#052e16,#16a34a)">📅</div>
+      <div class="feat-info">
+        <div class="feat-cat">Planners</div>
+        <div class="feat-name">2025 Digital Planner Pro</div>
+        <div class="feat-foot"><span class="feat-price">$14</span><span class="feat-stars">★★★★☆</span></div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="location.href='v1-category.html'">
+      <div class="feat-thumb" style="background:linear-gradient(135deg,#1e1b4b,#6d28d9)">🎨</div>
+      <div class="feat-info">
+        <div class="feat-cat">Canva</div>
+        <div class="feat-name">Brand Identity Bundle</div>
+        <div class="feat-foot"><span class="feat-price">$34</span><span class="feat-stars">★★★★★</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW ARRIVALS -->
+  <div class="sec-hd">
+    <div class="sec-hd-left">
+      <div class="sec-tag">Just Dropped</div>
+      <div class="sec-name">Fresh this week.</div>
+    </div>
+    <a href="v1-category.html">See All New →</a>
+  </div>
+
+  <div class="new-grid">
+    <div class="new-card" onclick="location.href='v1-category.html'">
+      <div class="new-thumb" style="background:linear-gradient(135deg,#431407,#ea580c)">🖼️<span class="new-badge">NEW</span></div>
+      <div class="new-info">
+        <div class="new-cat">Wall Art</div>
+        <div class="new-name">Minimalist Quote Prints — Vol. 3</div>
+        <div class="new-desc">50 ready-to-print 300dpi quotes. Modern sans typography, 6 color palettes.</div>
+        <div class="new-foot"><span class="new-price">$12</span><button class="new-add">Add to Cart</button></div>
+      </div>
+    </div>
+    <div class="new-card" onclick="location.href='v1-category.html'">
+      <div class="new-thumb" style="background:linear-gradient(135deg,#0c1445,#1e40af)">📄<span class="new-badge">NEW</span></div>
+      <div class="new-info">
+        <div class="new-cat">Resume</div>
+        <div class="new-name">Executive Resume Suite 2025</div>
+        <div class="new-desc">6-page ATS-optimized resume, cover letter, LinkedIn banner, and reference sheet.</div>
+        <div class="new-foot"><span class="new-price">$18</span><button class="new-add">Add to Cart</button></div>
+      </div>
+    </div>
+    <div class="new-card" onclick="location.href='v1-category.html'">
+      <div class="new-thumb" style="background:linear-gradient(135deg,#1a0533,#9333ea)">📣<span class="new-badge">NEW</span></div>
+      <div class="new-info">
+        <div class="new-cat">Marketing</div>
+        <div class="new-name">Email Newsletter Pack — 40 Layouts</div>
+        <div class="new-desc">40 responsive email templates. Works in Mailchimp, Klaviyo, and ConvertKit.</div>
+        <div class="new-foot"><span class="new-price">$27</span><button class="new-add">Add to Cart</button></div>
+      </div>
+    </div>
+    <div class="new-card" onclick="location.href='v1-category.html'">
+      <div class="new-thumb" style="background:linear-gradient(135deg,#4a044e,#c026d3)">📱<span class="new-badge">NEW</span></div>
+      <div class="new-info">
+        <div class="new-cat">Social Media</div>
+        <div class="new-name">LinkedIn Content Calendar — Q2 2025</div>
+        <div class="new-desc">90 days of LinkedIn post templates, hooks, carousel frames, and engagement prompts.</div>
+        <div class="new-foot"><span class="new-price">$22</span><button class="new-add">Add to Cart</button></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff">Q</div>
+        <span style="font-weight:700;font-size:16px">Quorbz</span>
+      </div>
+      <p>Premium digital products designed by an AI team trained on what actually sells — then reviewed before it ships.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Categories</h4>
+      <a href="v1-category.html">Productivity</a>
+      <a href="v1-category.html">Social Media</a>
+      <a href="v1-category.html">Business Docs</a>
+      <a href="v1-category.html">Wall Art</a>
+      <a href="v1-category.html">Canva Bundles</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Affiliates</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">License Terms</a>
+      <a href="#">Refund Policy</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-bottom-text">© 2025 Quorbz LLC. All rights reserved.</span>
+    <span class="footer-bottom-text">Instant downloads · Commercial license · Secure checkout</span>
+  </div>
+</footer>
+
+</body>
+</html>
