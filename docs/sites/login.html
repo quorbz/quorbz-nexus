@@ -289,8 +289,11 @@ function handleLogin(e) {
   e.preventDefault();
   document.getElementById('loadingOverlay').classList.add('show');
   // Redirect to home/dashboard after short delay
+  // Return to checkout if that's where they came from, otherwise home
+  const returnTo = sessionStorage.getItem('loginReturn') || 'index.html';
+  sessionStorage.removeItem('loginReturn');
   setTimeout(() => {
-    window.location.href = 'index.html';
+    window.location.href = returnTo;
   }, 1200);
 }
 

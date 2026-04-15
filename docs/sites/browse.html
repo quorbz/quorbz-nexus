@@ -456,5 +456,128 @@
   </div>
 </footer>
 
+
+<!-- ══ CART DRAWER ══ -->
+<style>
+  .cart-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(6,10,20,.6);backdrop-filter:blur(4px)}
+  .cart-overlay.open{display:block}
+  .cart-drawer{position:fixed;top:0;right:0;bottom:0;z-index:401;width:400px;max-width:95vw;background:#111827;border-left:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+  .cart-drawer.open{transform:translateX(0)}
+  .cart-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .cart-drawer-title{font-size:16px;font-weight:700}
+  .cart-close-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#94a3b8;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+  .cart-close-btn:hover{background:rgba(239,68,68,.2);color:#f87171}
+  .cart-drawer-items{flex:1;overflow-y:auto;padding:20px 24px}
+  .cart-drawer-items::-webkit-scrollbar{width:4px}
+  .cart-drawer-items::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+  .cart-item-row{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .cart-item-thumb{width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(29,78,216,.08));border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .cart-item-info{flex:1}
+  .cart-item-name{font-size:13px;font-weight:600;color:#f1f5f9;line-height:1.35;margin-bottom:3px}
+  .cart-item-meta{font-size:11px;color:#475569}
+  .cart-item-rm{font-size:11px;color:#475569;cursor:pointer;margin-top:4px;display:inline-block}
+  .cart-item-rm:hover{color:#ef4444}
+  .cart-item-price{font-size:14px;font-weight:700;color:#f1f5f9;flex-shrink:0}
+  .cart-empty{text-align:center;padding:48px 0;color:#475569}
+  .cart-empty-icon{font-size:48px;margin-bottom:12px}
+  .cart-drawer-foot{padding:20px 24px;border-top:1px solid rgba(255,255,255,.06)}
+  .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .cart-total-lbl{font-size:14px;color:#94a3b8}
+  .cart-total-val{font-size:22px;font-weight:800}
+  .cart-btn-checkout{width:100%;padding:14px;border-radius:10px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:1px solid rgba(59,130,246,.4);box-shadow:0 0 20px rgba(59,130,246,.3);cursor:pointer;margin-bottom:10px;font-family:inherit;transition:box-shadow .15s}
+  .cart-btn-checkout:hover{box-shadow:0 0 36px rgba(59,130,246,.5)}
+  .cart-btn-member{width:100%;padding:11px;border-radius:10px;font-size:13px;font-weight:600;background:rgba(255,255,255,.04);color:#94a3b8;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-family:inherit;transition:all .15s}
+  .cart-btn-member:hover{background:rgba(255,255,255,.08);color:#f1f5f9}
+  .cart-trust{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px}
+  .cart-trust span{font-size:11px;color:#475569}
+</style>
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <div class="cart-drawer-title">🛒 Your Cart <span id="drawerCount" style="font-size:12px;color:#94a3b8;font-weight:500"></span></div>
+    <button class="cart-close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-drawer-items" id="drawerItems"></div>
+  <div class="cart-drawer-foot">
+    <div class="cart-total-row">
+      <span class="cart-total-lbl">Total</span>
+      <span class="cart-total-val" id="drawerTotal">$0</span>
+    </div>
+    <button class="cart-btn-checkout" onclick="goCheckout()">⚡ Checkout as Guest →</button>
+    <button class="cart-btn-member" onclick="sessionStorage.setItem('loginReturn','checkout.html');window.location.href='login.html'">🔓 Sign In for Member Discount</button>
+    <div class="cart-trust">
+      <span>🔒 Secure</span><span>⚡ Instant download</span><span>↩ 30-day guarantee</span>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var _cart = [];
+  try{ var s=sessionStorage.getItem('quorbzCart'); if(s) _cart=JSON.parse(s); }catch(e){}
+
+  function saveCart(){ try{ sessionStorage.setItem('quorbzCart', JSON.stringify(_cart)); }catch(e){} }
+
+  function renderDrawer(){
+    var total = 0;
+    var badge = document.getElementById('cartCount');
+    var drawerCount = document.getElementById('drawerCount');
+    var itemsEl = document.getElementById('drawerItems');
+    var totalEl = document.getElementById('drawerTotal');
+    if(!itemsEl) return;
+    if(_cart.length === 0){
+      itemsEl.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div>Your cart is empty</div><div style="font-size:12px;margin-top:6px">Add some products to get started</div></div>';
+    } else {
+      itemsEl.innerHTML = _cart.map(function(item, i){
+        total += item.price;
+        return '<div class="cart-item-row"><div class="cart-item-thumb">'+item.emoji+'</div><div class="cart-item-info"><div class="cart-item-name">'+item.name+'</div><div class="cart-item-meta">Digital Download · Instant delivery</div><span class="cart-item-rm" onclick="window._cartRemove('+i+')">Remove</span></div><div class="cart-item-price">$'+item.price+'</div></div>';
+      }).join('');
+    }
+    if(badge){ badge.textContent = _cart.length; badge.style.background = _cart.length > 0 ? '#ef4444' : '#ef4444'; }
+    if(drawerCount) drawerCount.textContent = _cart.length > 0 ? '('+_cart.length+')' : '';
+    if(totalEl) totalEl.textContent = '$'+total;
+  }
+
+  window._cartRemove = function(i){
+    _cart.splice(i,1); saveCart(); renderDrawer();
+  };
+
+  window.addToCart = function(name, price, emoji){
+    name = name || 'Digital Product';
+    price = price || 12;
+    emoji = emoji || '📦';
+    _cart.push({name:name, price:price, emoji:emoji});
+    saveCart();
+    renderDrawer();
+    // Flash badge green
+    var badge = document.getElementById('cartCount');
+    if(badge){ badge.style.background='#10b981'; setTimeout(function(){ badge.style.background='#ef4444'; }, 600); }
+    openCart();
+  };
+
+  window.openCart = function(){
+    document.getElementById('cartOverlay').classList.add('open');
+    document.getElementById('cartDrawer').classList.add('open');
+    document.body.style.overflow='hidden';
+  };
+
+  window.closeCart = function(){
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.body.style.overflow='';
+  };
+
+  window.goCheckout = function(){
+    if(_cart.length === 0){ alert('Add something to your cart first!'); return; }
+    window.location.href = 'checkout.html';
+  };
+
+  // Wire cart button
+  var cartBtn = document.getElementById('cartBtn');
+  if(cartBtn) cartBtn.onclick = function(){ openCart(); };
+
+  renderDrawer();
+})();
+</script>
+
 </body>
 </html>
