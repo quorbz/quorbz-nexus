@@ -1,108 +1,104 @@
-interface Agent {
-  id: string;
-  name: string;
-  role: string;
-  machine: string;
-  model: string;
-  status: 'online' | 'offline' | 'degraded' | 'unknown';
-  lastHeartbeat: string | null;
-  currentTask: string | null;
-  latestHeartbeat?: {
-    cpuPercent?: number;
-    ramPercent?: number;
-    diskPercent?: number;
-    nanoclaw?: boolean;
-  } | null;
-}
-
-const STATUS_COLORS = {
-  online:   'bg-green-400',
-  degraded: 'bg-yellow-400',
-  offline:  'bg-red-500',
-  unknown:  'bg-gray-500',
-};
-
-const STATUS_LABELS = {
-  online: 'Online',
-  degraded: 'Degraded',
-  offline: 'Offline',
-  unknown: 'Unknown',
-};
+import type { Agent } from '../lib/roster';
+import { VENTURE_META } from '../lib/roster';
 
 function Bar({ value, color }: { value: number; color: string }) {
   return (
-    <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div className={`h-full ${color} rounded-full`} style={{ width: `${Math.min(value, 100)}%` }} />
+    <div className="progress-track">
+      <div className={`progress-fill ${color}`} style={{ width: `${Math.min(value, 100)}%` }} />
     </div>
   );
 }
 
-export default function AgentCard({ agent }: { agent: Agent }) {
-  const hb = agent.latestHeartbeat;
+const STRIPE_CLASS: Record<string, string> = {
+  ownership: 'venture-stripe-own',
+  v1:        'venture-stripe-v1',
+  v2:        'venture-stripe-v2',
+  v3:        'venture-stripe-v3',
+  v4:        'venture-stripe-v4',
+  finance:   'venture-stripe-fin',
+};
+
+export default function AgentCard({ agent, compact = false }: { agent: Agent; compact?: boolean }) {
+  const vm = VENTURE_META[agent.venture];
+  const isLive = agent.isActive;
+
+  if (compact) {
+    return (
+      <div
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${STRIPE_CLASS[agent.venture]}`}
+        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', paddingLeft: '12px' }}
+      >
+        <span className={`status-dot ${agent.status}`} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{agent.name}</span>
+            <span className={`badge-venture ${vm.badgeClass}`}>{vm.label.split(' — ')[0]}</span>
+          </div>
+          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{agent.role}</div>
+        </div>
+        {!isLive && (
+          <span className="text-xs px-1.5 py-0.5 rounded" style={{ color: '#475569', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            future
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className="card hover:border-gray-700 transition-colors">
+    <div className={`card ${STRIPE_CLASS[agent.venture]} ${!isLive ? 'opacity-60' : ''}`} style={{ paddingLeft: '16px' }}>
+      {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div>
-          <div className="font-semibold text-gray-100">{agent.name}</div>
-          <div className="text-xs text-gray-500">{agent.role}</div>
+          <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{agent.name}</div>
+          <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{agent.role}</div>
         </div>
         <div className="flex items-center gap-1.5">
           <span className={`status-dot ${agent.status}`} />
-          <span className={`text-xs ${agent.status === 'online' ? 'text-green-400' : agent.status === 'offline' ? 'text-red-400' : 'text-gray-400'}`}>
-            {STATUS_LABELS[agent.status]}
-          </span>
+          <span className={`badge-venture ${vm.badgeClass}`}>{vm.label.split(' — ')[0]}</span>
         </div>
       </div>
 
-      <div className="text-xs text-gray-500 mb-3 space-y-0.5">
-        <div>{agent.machine}</div>
-        <div className="font-mono text-gray-600">{agent.model}</div>
-      </div>
-
-      {hb && (
-        <div className="space-y-2 mb-3">
-          {hb.cpuPercent !== undefined && (
-            <div>
-              <div className="flex justify-between text-xs text-gray-500 mb-0.5">
-                <span>CPU</span><span>{hb.cpuPercent.toFixed(0)}%</span>
-              </div>
-              <Bar value={hb.cpuPercent} color={hb.cpuPercent > 85 ? 'bg-red-400' : 'bg-brand-500'} />
-            </div>
-          )}
-          {hb.ramPercent !== undefined && (
-            <div>
-              <div className="flex justify-between text-xs text-gray-500 mb-0.5">
-                <span>RAM</span><span>{hb.ramPercent.toFixed(0)}%</span>
-              </div>
-              <Bar value={hb.ramPercent} color={hb.ramPercent > 85 ? 'bg-yellow-400' : 'bg-brand-500'} />
-            </div>
-          )}
-          {hb.diskPercent !== undefined && (
-            <div>
-              <div className="flex justify-between text-xs text-gray-500 mb-0.5">
-                <span>Disk</span><span>{hb.diskPercent.toFixed(0)}%</span>
-              </div>
-              <Bar value={hb.diskPercent} color={hb.diskPercent > 90 ? 'bg-red-400' : 'bg-gray-500'} />
-            </div>
-          )}
+      {!isLive ? (
+        <div className="text-xs rounded-lg px-3 py-2 text-center" style={{ color: 'var(--text-muted)', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.08)' }}>
+          Deploying {agent.venture === 'v2' ? 'after V1 revenue' : agent.venture === 'v3' ? 'Year 3' : agent.venture === 'v4' ? 'Year 4' : 'future'}
         </div>
-      )}
+      ) : (
+        <>
+          {/* Vitals */}
+          <div className="space-y-2 mb-3">
+            {[
+              { label: 'CPU', value: agent.cpuPercent, color: agent.cpuPercent > 85 ? 'red' : 'blue' },
+              { label: 'RAM', value: agent.ramPercent, color: agent.ramPercent > 85 ? 'yellow' : 'purple' },
+              { label: 'Disk', value: agent.diskPercent, color: agent.diskPercent > 88 ? 'red' : 'teal' },
+            ].map(({ label, value, color }) => (
+              <div key={label}>
+                <div className="flex justify-between text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>
+                  <span>{label}</span><span>{value}%</span>
+                </div>
+                <Bar value={value} color={color} />
+              </div>
+            ))}
+          </div>
 
-      {agent.currentTask && (
-        <div className="text-xs text-brand-300 bg-brand-900/20 border border-brand-800/30 rounded px-2 py-1 truncate">
-          {agent.currentTask}
-        </div>
-      )}
+          {/* Machine info */}
+          <div className="text-xs font-mono mb-2 truncate" style={{ color: 'var(--text-muted)' }}>{agent.model}</div>
 
-      {agent.lastHeartbeat && (
-        <div className="text-xs text-gray-600 mt-2">
-          Last seen {new Date(agent.lastHeartbeat).toLocaleTimeString()}
-        </div>
-      )}
+          {/* Current task */}
+          {agent.currentTask ? (
+            <div
+              className="text-xs px-2 py-1.5 rounded-lg truncate"
+              style={{ color: '#93c5fd', background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)' }}
+            >
+              {agent.currentTask}
+            </div>
+          ) : agent.nanoclaw === false ? (
+            <div className="text-xs" style={{ color: '#f87171' }}>⚠ NanoClaw down</div>
+          ) : null}
 
-      {hb?.nanoclaw === false && (
-        <div className="mt-2 text-xs text-red-400">⚠ NanoClaw process down</div>
+          {/* Uptime */}
+          <div className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>Up {agent.uptime}</div>
+        </>
       )}
     </div>
   );

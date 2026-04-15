@@ -1,82 +1,109 @@
-import { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import { onWsMessage } from '../lib/ws';
+import { useState } from 'react';
+import { AGENTS, ACTIVE_AGENTS, VENTURE_META, type VentureKey } from '../lib/roster';
 import AgentCard from '../components/AgentCard';
+import OrgChart from '../components/OrgChart';
 
-interface Agent {
-  id: string;
-  name: string;
-  role: string;
-  machine: string;
-  ip: string;
-  os: string;
-  model: string;
-  hierarchyLevel: number;
-  reportsTo: string | null;
-  venture: string | null;
-  isActive: boolean;
-  status: 'online' | 'offline' | 'degraded' | 'unknown';
-  lastHeartbeat: string | null;
-  currentTask: string | null;
-  latestHeartbeat: {
-    cpuPercent?: number;
-    ramPercent?: number;
-    diskPercent?: number;
-    nanoclaw?: boolean;
-  } | null;
-}
+type View = 'grid' | 'orgchart';
 
-const LEVEL_LABELS: Record<number, string> = {
-  0: 'Founder',
-  1: 'Ownership Layer',
-  2: 'Executive',
-  3: 'Lead',
-  4: 'Contributor',
-};
+const VENTURE_GROUPS: { key: VentureKey | 'ownership'; label: string }[] = [
+  { key: 'ownership', label: 'Ownership' },
+  { key: 'v1',        label: 'Venture 1 — Digital Products' },
+  { key: 'v2',        label: 'Venture 2 — SaaS' },
+  { key: 'v3',        label: 'Venture 3 — Family Dashboard' },
+  { key: 'v4',        label: 'Venture 4 — PaaS' },
+  { key: 'finance',   label: "Leo's Finance & Legal" },
+];
 
 export default function CommandPage() {
-  const [agents, setAgents] = useState<Agent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<View>('grid');
+  const [showFuture, setShowFuture] = useState(true);
 
-  async function load() {
-    const data = await api.get<Agent[]>('/agents');
-    setAgents(data);
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    load();
-    const unsub = onWsMessage((msg) => {
-      if (msg.type === 'heartbeat_update') load();
-    });
-    return unsub;
-  }, []);
-
-  if (loading) return <div className="text-gray-500 text-sm">Loading agents…</div>;
-
-  // Group by hierarchy level
-  const levels = [...new Set(agents.map((a) => a.hierarchyLevel))].sort();
+  const displayAgents = showFuture ? AGENTS : ACTIVE_AGENTS;
+  const onlineCount = ACTIVE_AGENTS.filter((a) => a.status === 'online').length;
+  const totalActive = ACTIVE_AGENTS.length;
 
   return (
     <div>
-      <h1 className="text-lg font-semibold text-gray-200 mb-6">Agent Command</h1>
+      {/* Header bar */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Agent Command</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>
+            {onlineCount}/{totalActive} active agents online · {AGENTS.length - totalActive} future agents planned
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowFuture(!showFuture)}
+            className="text-xs px-3 py-1.5 rounded-lg transition-colors"
+            style={{
+              color: showFuture ? '#93c5fd' : 'var(--text-muted)',
+              background: showFuture ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${showFuture ? 'rgba(59,130,246,0.25)' : 'rgba(255,255,255,0.08)'}`,
+            }}
+          >
+            {showFuture ? 'Showing all 24' : 'Active only'}
+          </button>
+          {(['grid', 'orgchart'] as View[]).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className="text-xs px-3 py-1.5 rounded-lg transition-colors capitalize"
+              style={{
+                color: view === v ? '#93c5fd' : 'var(--text-muted)',
+                background: view === v ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${view === v ? 'rgba(59,130,246,0.25)' : 'rgba(255,255,255,0.08)'}`,
+              }}
+            >
+              {v === 'orgchart' ? 'Org Chart' : 'Grid'}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {levels.map((level) => {
-        const group = agents.filter((a) => a.hierarchyLevel === level);
-        return (
-          <div key={level} className="mb-8">
-            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 rounded bg-gray-800 inline-flex items-center justify-center text-gray-400">{level}</span>
-              {LEVEL_LABELS[level] ?? `Level ${level}`}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {group.map((agent) => (
-                <AgentCard key={agent.id} agent={agent} />
-              ))}
-            </div>
+      {view === 'orgchart' ? (
+        <div className="card" style={{ overflowX: 'auto' }}>
+          <div className="section-label mb-6">Full Org Hierarchy — {AGENTS.length} Agents · 4 Ventures</div>
+          <OrgChart />
+          <div className="mt-6 pt-4 flex flex-wrap gap-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+            {Object.entries(VENTURE_META).map(([key, vm]) => (
+              <div key={key} className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+                <div className="w-2 h-2 rounded-full" style={{ background: vm.color }} />
+                {vm.label}
+              </div>
+            ))}
           </div>
-        );
-      })}
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {VENTURE_GROUPS.map(({ key, label }) => {
+            const group = displayAgents.filter((a) =>
+              key === 'ownership' ? a.hierarchyLevel <= 2 && a.venture === 'ownership' :
+              a.venture === key
+            );
+            if (group.length === 0) return null;
+            const vm = VENTURE_META[key as VentureKey] ?? VENTURE_META.ownership;
+
+            return (
+              <div key={key}>
+                <div className="section-label mb-4">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: vm.color, boxShadow: `0 0 6px ${vm.color}` }} />
+                  {label}
+                  <span className="text-xs ml-1" style={{ color: 'var(--text-muted)' }}>
+                    ({group.filter((a) => a.isActive).length} active
+                    {group.some((a) => !a.isActive) ? ` · ${group.filter((a) => !a.isActive).length} planned` : ''})
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {group.map((agent) => (
+                    <AgentCard key={agent.id} agent={agent} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quorbz Nexus — Visual Design Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg:       #060a14;
+  --surface:  #0b1120;
+  --elevated: #101828;
+  --border:   rgba(255,255,255,0.07);
+  --b-muted:  rgba(255,255,255,0.11);
+  --blue:     #3b82f6;
+  --purple:   #8b5cf6;
+  --teal:     #06b6d4;
+  --green:    #10b981;
+  --amber:    #f59e0b;
+  --red:      #ef4444;
+  --indigo:   #6366f1;
+  --t1:       #e2e8f0;
+  --t2:       #94a3b8;
+  --t3:       #475569;
+  --t4:       #1e293b;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--t1); -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); background-image: radial-gradient(ellipse 100% 60% at 50% -10%, rgba(59,130,246,0.07) 0%, transparent 70%); }
+
+/* Layout */
+.container { max-width: 1440px; margin: 0 auto; padding: 0 32px; }
+.hero { padding: 80px 0 40px; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 99px; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(59,130,246,0.1); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); margin-bottom: 20px; }
+.hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; box-shadow: 0 0 8px rgba(59,130,246,0.8); }
+h1 { font-size: clamp(40px, 5vw, 72px); font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(135deg, #fff 0%, #93c5fd 40%, #a78bfa 70%, #22d3ee 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.05; }
+.hero-sub { font-size: 16px; color: var(--t2); margin-top: 16px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+.stats-row { display: flex; justify-content: center; gap: 48px; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border); }
+.stat { text-align: center; }
+.stat-val { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-lbl { font-size: 12px; color: var(--t3); margin-top: 4px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* Section */
+.section { padding: 60px 0; }
+.section-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 32px; }
+.section-title { font-size: 22px; font-weight: 700; color: var(--t1); }
+.section-sub { font-size: 13px; color: var(--t3); }
+.section-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+
+/* Screen frames */
+.screen { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03) inset; margin-bottom: 24px; position: relative; }
+.screen-bar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(11,17,32,0.95); border-bottom: 1px solid var(--border); }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.r { background: #ef4444; } .dot.y { background: #f59e0b; } .dot.g { background: #10b981; }
+.screen-url { flex: 1; text-align: center; font-size: 11px; color: var(--t3); font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.04); padding: 3px 12px; border-radius: 6px; }
+.screen-body { background: var(--bg); min-height: 400px; padding: 0; }
+
+/* Topbar */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 24px; background: rgba(11,17,32,0.98); border-bottom: 1px solid var(--border); }
+.logo-mark { width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; box-shadow: 0 0 14px rgba(59,130,246,0.4); flex-shrink: 0; }
+.logo-text { font-size: 13px; font-weight: 600; color: var(--t1); }
+.logo-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; color: #60a5fa; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); }
+.tabs { display: flex; padding: 0 24px; background: rgba(11,17,32,0.85); border-bottom: 1px solid rgba(255,255,255,0.05); }
+.tab { padding: 9px 14px; font-size: 12px; font-weight: 500; color: var(--t3); border-bottom: 2px solid transparent; }
+.tab.active { color: #93c5fd; border-bottom-color: #3b82f6; }
+.content { padding: 24px; }
+
+/* Cards & micro components */
+.card { background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%); pointer-events: none; }
+.card-grad { background: linear-gradient(135deg, rgba(11,17,32,0.98) 0%, rgba(6,10,20,0.99) 100%); border-radius: 12px; padding: 16px; position: relative; }
+.card-grad::before { content: ''; position: absolute; inset: 0; border-radius: 12px; padding: 1px; background: linear-gradient(135deg, rgba(59,130,246,0.5) 0%, rgba(139,92,246,0.3) 50%, rgba(6,182,212,0.2) 100%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+
+.sdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sdot.online  { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.9); }
+.sdot.offline { background: #ef4444; box-shadow: 0 0 5px rgba(239,68,68,0.6); }
+.sdot.degraded{ background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.9); }
+.sdot.unknown { background: #475569; }
+
+.bar-track { height: 4px; border-radius: 9999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 9999px; }
+
+.badge { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+.badge-v1 { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); }
+.badge-v2 { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
+.badge-v3 { background: rgba(6,182,212,0.15); color: #67e8f9; border: 1px solid rgba(6,182,212,0.25); }
+.badge-v4 { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.25); }
+.badge-fin { background: rgba(251,191,36,0.12); color: #fde68a; border: 1px solid rgba(251,191,36,0.2); }
+.badge-own { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+
+.pending-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 5px; background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.metric-big { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+
+/* Venture column */
+.v-col { text-align: center; }
+.v-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; margin: 0 auto 6px; position: relative; }
+.v-line { width: 1px; height: 18px; margin: 0 auto; }
+.v-horiz { height: 1px; margin-bottom: 8px; }
+.v-team { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.v-agent { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+
+/* Phone frame */
+.phone-frame { width: 320px; border-radius: 40px; border: 7px solid rgba(255,255,255,0.08); box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04); overflow: hidden; background: var(--bg); margin: 0 auto; }
+.phone-status { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 6px; font-size: 11px; color: var(--t2); background: var(--surface); font-weight: 600; }
+.phone-notch { width: 80px; height: 14px; background: #000; border-radius: 7px; margin: 0 auto; }
+.phone-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.phone-content { padding: 12px; background: var(--bg); }
+.phone-nav { display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 8px 10px; background: var(--surface); border-top: 1px solid var(--border); }
+.phone-nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; border-radius: 10px; }
+.phone-nav-icon { font-size: 14px; }
+.phone-nav-lbl { font-size: 8px; font-weight: 500; }
+
+/* Section divider */
+.divider { height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 48px 0; }
+
+/* Caption */
+.caption { font-size: 12px; color: var(--t3); margin-top: 8px; }
+
+/* Glow accents */
+.glow-blue { box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+.glow-purple { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+
+a { color: #60a5fa; text-decoration: none; }
+a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-badge">Visual Design Portfolio — April 2026</div>
+    <h1>Quorbz Nexus</h1>
+    <p class="hero-sub">Mission Control for the Quorbz AI empire. 24 autonomous agents. 4 ventures. One dashboard built to scale from 6 to 24 agents without a rebuild.</p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-val">24</div><div class="stat-lbl">Agents at Scale</div></div>
+      <div class="stat"><div class="stat-val">4</div><div class="stat-lbl">Ventures</div></div>
+      <div class="stat"><div class="stat-val">6</div><div class="stat-lbl">Dashboard Tabs</div></div>
+      <div class="stat"><div class="stat-val">∞</div><div class="stat-lbl">Uptime Target</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SYNTHESIZER TAB -->
+<div class="container">
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Synthesizer</div>
+    <div class="section-sub">The daily command center. Auto-refreshing. Kiosk mode for the rack monitor.</div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="screen-url">nexus.quorbz.internal</div></div>
+    <div class="screen-body">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="logo-mark">Q</div>
+          <div class="logo-text">Quorbz</div>
+          <div class="logo-badge">Nexus</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:var(--t3)">
+          <div style="display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.8)"></div>Live</div>
+          <span>Apr 15, 2026</span>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active">Synthesizer</div>
+        <div class="tab">Command</div><div class="tab">Pipeline</div><div class="tab">Budget</div><div class="tab">Security</div><div class="tab">Infrastructure</div>
+      </div>
+      <div class="content">
+        <!-- Stats ribbon -->
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="card" style="text-align:center">
+            <div class="metric-big" style="color:#10b981">3/6</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em">Agents Online</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div class="metric-big" style="color:var(--t3)">0</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em">Open Blockers</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div class="metric-big" style="color:var(--t3)">0</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em">Critical Incidents</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div class="metric-big" style="color:var(--t1)">$2.87</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em">Today's Spend</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:16px">
+          <!-- Agent status -->
+          <div class="card">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:12px">Agent Status</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              ${[
+                ['Nico','CTO','online','own'],['Elena','President','online','v1'],['Leo','CFO/Legal','online','fin'],
+                ['Mila','CMO','online','v1'],['Marco','CPO','degraded','v1'],['Maya','CSO','online','v1']
+              ].map(([n,r,s,v])=>`
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="sdot ${s}"></div>
+                  <span style="font-size:13px;color:var(--t1)">${n}</span>
+                  <span style="font-size:10px;color:var(--t3)">${r}</span>
+                </div>
+                <span style="font-size:10px;color:var(--t3)">${s==='online'?'just now':s==='degraded'?'2m ago':'—'}</span>
+              </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Blockers -->
+          <div class="card">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:12px">Open Blockers</div>
+            <div style="font-size:13px;color:var(--t3)">No open blockers</div>
+            <div style="margin-top:32px;padding:12px;border-radius:8px;background:rgba(239,68,68,0.06);border:1px dashed rgba(239,68,68,0.15);text-align:center">
+              <div style="font-size:11px;color:var(--t3)">Blockers surface here immediately when any agent reports one</div>
+            </div>
+          </div>
+
+          <!-- Feed -->
+          <div class="card">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:12px">Feed — Last 24h</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              ${[
+                ['🏆','Nexus Stage 1 pushed to GitHub','55 files · 3,316 lines','milestone','v1'],
+                ['📋','Daily Briefing — Apr 15','Elena: 3 products researched. Mila: 12 Etsy assets. No blockers.','briefing',null],
+                ['🔄','NanoClaw-Quorbz shipped','xAI/Grok native fork complete. Ready for Elena deployment.','status_change',null],
+                ['🚨','SSH access needed — 4 machines','Mila, Marco, Maya, Leo unreachable. Heartbeats pending.','alert',null],
+              ].map(([icon,title,body,type])=>`
+              <div style="border-radius:8px;padding:8px;border:1px solid;${type==='alert'?'border-color:rgba(239,68,68,0.25);background:rgba(239,68,68,0.06)':type==='milestone'?'border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.06)':type==='briefing'?'border-color:rgba(59,130,246,0.2);background:rgba(59,130,246,0.06)':'border-color:rgba(255,255,255,0.07);background:rgba(255,255,255,0.02)'}">
+                <div style="font-size:12px;font-weight:500;color:var(--t1);display:flex;align-items:center;gap:5px"><span>${icon}</span>${title}</div>
+                <div style="font-size:11px;color:var(--t2);margin-top:2px">${body}</div>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="caption">Synthesizer Tab — auto-refreshes every 30s · kiosk mode (?kiosk=1) strips nav for rack display</p>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMMAND + ORG CHART -->
+<div class="container">
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Command — Org Chart</div>
+    <div class="section-sub">Full 24-agent hierarchy across 4 ventures. Toggle between grid and org chart views.</div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="screen-url">nexus.quorbz.internal/command</div></div>
+    <div class="screen-body">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px"><div class="logo-mark">Q</div><div class="logo-text">Quorbz</div><div class="logo-badge">Nexus</div></div>
+      </div>
+      <div class="tabs">
+        <div class="tab">Synthesizer</div><div class="tab active">Command</div><div class="tab">Pipeline</div><div class="tab">Budget</div><div class="tab">Security</div><div class="tab">Infrastructure</div>
+      </div>
+      <div class="content">
+        <!-- Org chart -->
+        <div class="card" style="overflow-x:auto">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:24px;display:flex;align-items:center;gap:8px">
+            Full Org Hierarchy — 24 Agents · 4 Ventures
+            <div style="flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent)"></div>
+          </div>
+
+          <!-- Ownership -->
+          <div style="display:flex;justify-content:center;gap:80px;margin-bottom:4px">
+            ${[['N','Nico','CTO','#6366f1'],['L','Leo','CFO','#f59e0b']].map(([i,n,r,c])=>`
+            <div class="v-col">
+              <div class="v-avatar" style="background:${c}22;border:1.5px solid ${c}55;color:${c};box-shadow:0 0 12px ${c}33">
+                ${i}
+                <div class="sdot online" style="position:absolute;bottom:-1px;right:-1px;border:2px solid var(--bg)"></div>
+              </div>
+              <div style="font-size:11px;font-weight:600;color:var(--t1)">${n}</div>
+              <div style="font-size:9px;color:var(--t3)">${r}</div>
+            </div>`).join('')}
+          </div>
+
+          <!-- Vertical to Elena -->
+          <div style="width:1px;height:20px;background:linear-gradient(to bottom,rgba(99,102,241,0.5),rgba(59,130,246,0.3));margin:0 auto"></div>
+
+          <!-- Elena -->
+          <div style="display:flex;justify-content:center;margin-bottom:4px">
+            <div class="v-col">
+              <div class="v-avatar" style="background:rgba(59,130,246,0.15);border:1.5px solid rgba(59,130,246,0.4);color:#60a5fa;box-shadow:0 0 14px rgba(59,130,246,0.2)">
+                E
+                <div class="sdot online" style="position:absolute;bottom:-1px;right:-1px;border:2px solid var(--bg)"></div>
+              </div>
+              <div style="font-size:11px;font-weight:600;color:var(--t1)">Elena</div>
+              <div style="font-size:9px;color:var(--t3)">President</div>
+            </div>
+          </div>
+
+          <!-- Horizontal span -->
+          <div style="width:700px;max-width:100%;height:1px;margin:0 auto 4px;background:linear-gradient(to right,transparent,rgba(59,130,246,0.3),rgba(139,92,246,0.25),rgba(6,182,212,0.2),rgba(16,185,129,0.2),rgba(245,158,11,0.2),transparent)"></div>
+
+          <!-- Venture columns -->
+          <div style="display:flex;gap:8px;justify-content:center;overflow-x:auto">
+            ${[
+              {v:'V1',c:'#3b82f6',bc:'badge-v1',lead:'Aria',team:['Mila','Marco','Maya'],roles:['CMO','CPO','CSO'],live:[false,true,true,true]},
+              {v:'V2',c:'#8b5cf6',bc:'badge-v2',lead:'Kai',team:['Sage','Atlas','Quinn'],roles:['Architect','Engineer','QA'],live:[false,false,false,false]},
+              {v:'V3',c:'#06b6d4',bc:'badge-v3',lead:'Nova',team:['Iris','Orion','Hex'],roles:['UX','Backend','Security'],live:[false,false,false,false]},
+              {v:'V4',c:'#10b981',bc:'badge-v4',lead:'Rex',team:['Zara','Echo','Flux'],roles:['Platform','DevRel','Integration'],live:[false,false,false,false]},
+              {v:'Fin',c:'#f59e0b',bc:'badge-fin',lead:'Vex',team:['Clio','Juno','Max'],roles:['Finance','Legal','Compliance'],live:[false,false,false,false]},
+            ].map(({v,c,bc,lead,team,roles,live})=>`
+            <div class="v-col" style="min-width:110px">
+              <div style="width:1px;height:16px;background:linear-gradient(to bottom,${c}50,${c}20);margin:0 auto"></div>
+              <!-- Lead -->
+              <div class="v-avatar" style="background:${c}22;border:1.5px solid ${c}55;color:${c};opacity:${live[0]?1:0.45};font-size:13px">
+                ${lead[0]}
+                ${live[0]?`<div class="sdot online" style="position:absolute;bottom:-1px;right:-1px;border:2px solid var(--bg)"></div>`:''}
+              </div>
+              <div style="font-size:10px;font-weight:600;color:${live[0]?'var(--t1)':'var(--t3)'};margin-top:4px">${lead}</div>
+              <div style="margin:4px 0"><span class="${bc} badge" style="font-size:9px">${v}</span></div>
+              <div style="width:1px;height:14px;background:${c}30;margin:0 auto"></div>
+              <!-- Team -->
+              <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+                ${team.map((name,i)=>`
+                <div style="display:flex;align-items:center;gap:5px;opacity:${live[i+1]?1:0.35}">
+                  <div class="v-agent" style="width:32px;height:32px;background:${c}18;border:1px solid ${c}33;color:${c};font-size:11px">${name[0]}</div>
+                  <div style="text-align:left">
+                    <div style="font-size:10px;font-weight:500;color:${live[i+1]?'var(--t1)':'var(--t3)'}">${name}</div>
+                    <div style="font-size:9px;color:var(--t3)">${roles[i]}</div>
+                  </div>
+                </div>`).join('')}
+              </div>
+            </div>`).join('')}
+          </div>
+
+          <!-- Legend -->
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+            ${[['#6366f1','Ownership'],['#3b82f6','V1 Digital'],['#8b5cf6','V2 SaaS'],['#06b6d4','V3 Dashboard'],['#10b981','V4 PaaS'],['#f59e0b','Finance']].map(([c,l])=>`
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t3)">
+              <div style="width:8px;height:8px;border-radius:50%;background:${c}"></div>${l}
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="caption">Command Tab — toggle between Grid and Org Chart · "future" agents shown dimmed until deployed</p>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- BUDGET -->
+<div class="container">
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Budget & Cost</div>
+    <div class="section-sub">Per-agent spend, budget limits, daily burn sparklines.</div>
+  </div>
+  <div class="screen">
+    <div class="screen-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="screen-url">nexus.quorbz.internal/budget</div></div>
+    <div class="screen-body">
+      <div class="topbar"><div style="display:flex;align-items:center;gap:10px"><div class="logo-mark">Q</div><div class="logo-text">Quorbz</div><div class="logo-badge">Nexus</div></div></div>
+      <div class="tabs"><div class="tab">Synthesizer</div><div class="tab">Command</div><div class="tab">Pipeline</div><div class="tab active">Budget</div><div class="tab">Security</div><div class="tab">Infrastructure</div></div>
+      <div class="content">
+        <!-- Company total -->
+        <div class="card-grad" style="margin-bottom:16px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between">
+            <div>
+              <div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Company Total — April 2026</div>
+              <div style="font-size:36px;font-weight:700;letter-spacing:-.02em;color:var(--t1)">$163.55</div>
+              <div style="font-size:13px;color:var(--t3)">of $475 monthly budget</div>
+            </div>
+            <div style="text-align:right"><div style="font-size:28px;font-weight:700;color:#34d399">34%</div><div style="font-size:11px;color:var(--t3)">used</div></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="bar-track"><div class="bar-fill" style="width:34%;background:linear-gradient(90deg,#3b82f6,#8b5cf6)"></div></div>
+          </div>
+        </div>
+        <!-- Agent cards -->
+        <div class="grid-3" style="grid-template-columns:repeat(3,1fr)">
+          ${[
+            ['Nico','CTO','claude-sonnet-4-6',12.40,50,25,'#6366f1','blue'],
+            ['Elena','President','grok-4-1',38.75,100,39,'#3b82f6','blue'],
+            ['Leo','CFO/Legal','grok-4-1',22.10,100,22,'#f59e0b','amber'],
+            ['Mila','CMO','grok-4-1',41.80,75,56,'#8b5cf6','purple'],
+            ['Marco','CPO','grok-4-1',19.60,75,26,'#06b6d4','teal'],
+            ['Maya','CSO','grok-4-1',28.90,75,39,'#10b981','green'],
+          ].map(([n,r,m,spent,limit,pct,c])=>`
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+              <div><div style="font-size:13px;font-weight:600;color:var(--t1)">${n}</div><div style="font-size:11px;color:var(--t3)">${r}</div></div>
+              <div style="font-size:18px;font-weight:700;color:${pct>80?'#f87171':pct>60?'#fbbf24':'#34d399'}">${pct}%</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:4px"><span>$${spent} spent</span><span>$${limit} limit</span></div>
+            <div class="bar-track" style="margin-bottom:8px"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${c}99,${c})"></div></div>
+            <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:8px">${m}</div>
+            <!-- Sparkline placeholder -->
+            <div style="display:flex;align-items:flex-end;gap:1.5px;height:24px">
+              ${[0.6,0.9,0.7,1.1,0.8,1.0,0.9,1.2,0.8,1.1,0.9,1.0,0.8,1.2].map(v=>`<div style="flex:1;border-radius:2px;background:${c};opacity:0.6;height:${Math.round(v/1.2*100)}%;min-height:2px"></div>`).join('')}
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="caption">Budget Tab — live data requires ANTHROPIC_BILLING_KEY + XAI_BILLING_KEY · manual entry available until then</p>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECURITY -->
+<div class="container">
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Security / Network</div>
+    <div class="section-sub">Zero trust posture, WireGuard VPN, credential rotation, incident log.</div>
+  </div>
+  <div class="screen">
+    <div class="screen-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="screen-url">nexus.quorbz.internal/security</div></div>
+    <div class="screen-body">
+      <div class="topbar"><div style="display:flex;align-items:center;gap:10px"><div class="logo-mark">Q</div><div class="logo-text">Quorbz</div><div class="logo-badge">Nexus</div></div></div>
+      <div class="tabs"><div class="tab">Synthesizer</div><div class="tab">Command</div><div class="tab">Pipeline</div><div class="tab">Budget</div><div class="tab active">Security</div><div class="tab">Infrastructure</div></div>
+      <div class="content">
+        <div class="grid-4" style="margin-bottom:16px">
+          ${[['0','Critical','#ef4444'],['0','High','#94a3b8'],['6/6','Online','#10b981'],['4','VPN Clients','#60a5fa']].map(([v,l,c])=>`
+          <div class="card" style="text-align:center"><div class="metric-big" style="color:${c}">${v}</div><div style="font-size:11px;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em">${l}</div></div>`).join('')}
+        </div>
+        <div class="grid-2" style="margin-bottom:16px">
+          <!-- WireGuard -->
+          <div class="card">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">WireGuard VPN</div>
+            ${[['Benjamin (iPhone)','10.0.0.2','2m ago'],['Benjamin (MacBook)','10.0.0.3','14m ago'],['Elena (DL360)','10.0.0.5','1m ago'],['Leo (DL380)','10.0.0.6','1m ago']].map(([n,ip,t])=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <div style="display:flex;align-items:center;gap:6px">
+                <div class="sdot online"></div>
+                <span style="font-size:12px;color:var(--t1)">${n}</span>
+              </div>
+              <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace">${ip} · ${t}</div>
+            </div>`).join('')}
+          </div>
+          <!-- Credential rotation -->
+          <div class="card">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Credential Rotation</div>
+            ${[
+              ['XAI_API_KEY (Elena)','8d','ok'],['TELEGRAM_BOT_TOKEN','31d','warn'],
+              ['ANTHROPIC_API_KEY','14d','ok'],['ONECLI_VAULT_TOKEN','73d','overdue']
+            ].map(([n,d,s])=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:11px;color:var(--t1)">${n}</span>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-size:10px;color:var(--t3)">${d} ago</span>
+                <span style="font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;${s==='ok'?'background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)':s==='warn'?'background:rgba(245,158,11,0.1);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)':'background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)'}">
+                  ${s==='ok'?'✓ Current':s==='warn'?'Rotate Soon':'Overdue'}
+                </span>
+              </div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <!-- Incident log -->
+        <div class="card">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Open Incidents</div>
+          <div style="font-size:12px;color:var(--t3)">No open incidents — all clear</div>
+          <div style="margin-top:10px;font-size:11px;color:var(--t3)">Full SSH fail counter · outbound anomaly detection · file integrity · one-click isolation → Stage 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="caption">Security Tab — live data populates as Promtail ships logs to Loki · credential tracker updates manually until OneCLI vault is loaded</p>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- MOBILE -->
+<div class="container">
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Mobile Lite Controls</div>
+    <div class="section-sub">PWA — installable from Safari. Runs over WireGuard. Approve tasks, view agent status, see alerts while on the go.</div>
+  </div>
+
+  <div style="display:flex;gap:48px;align-items:flex-start;justify-content:center;flex-wrap:wrap">
+
+    <!-- Phone 1: Feed -->
+    <div>
+      <div class="phone-frame">
+        <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>100%</span></div>
+        <div class="phone-header">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div class="logo-mark" style="width:22px;height:22px;font-size:10px">Q</div>
+            <span style="font-size:12px;font-weight:600;color:var(--t1)">Nexus</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px"><div class="sdot online"></div><span style="font-size:10px;color:#34d399">3 online</span></div>
+        </div>
+        <div class="phone-content">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">
+            ${[['3/6','Online','#34d399'],['0','Blockers','#94a3b8'],['$2.87','Today','#94a3b8']].map(([v,l,c])=>`
+            <div class="card" style="text-align:center;padding:8px 6px">
+              <div style="font-size:14px;font-weight:700;color:${c}">${v}</div>
+              <div style="font-size:9px;color:var(--t3);margin-top:2px">${l}</div>
+            </div>`).join('')}
+          </div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:6px">Needs Approval</div>
+          ${[['V1 Product Package','Elena → Benjamin'],['Deploy NanoClaw','Nico → Benjamin']].map(([t,f])=>`
+          <div style="border-radius:10px;padding:10px;border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.06);margin-bottom:6px">
+            <div style="font-size:11px;font-weight:500;color:var(--t1)">${t}</div>
+            <div style="font-size:9px;color:var(--t3);margin-bottom:6px">${f}</div>
+            <div style="display:flex;gap:5px">
+              <div style="flex:1;text-align:center;padding:4px;border-radius:7px;background:rgba(16,185,129,0.15);color:#34d399;font-size:9px;font-weight:600;border:1px solid rgba(16,185,129,0.25)">Approve</div>
+              <div style="flex:1;text-align:center;padding:4px;border-radius:7px;background:rgba(239,68,68,0.1);color:#f87171;font-size:9px;font-weight:600;border:1px solid rgba(239,68,68,0.2)">Reject</div>
+            </div>
+          </div>`).join('')}
+          <div style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:8px 0 6px">Agents</div>
+          ${[['Nico','CTO','online'],['Elena','President','online'],['Leo','CFO','online'],['Mila','CMO','online'],['Marco','CPO','degraded'],['Maya','CSO','online']].map(([n,r,s])=>`
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);margin-bottom:4px">
+            <div class="sdot ${s}"></div>
+            <span style="font-size:11px;font-weight:500;color:var(--t1);flex:1">${n}</span>
+            <span style="font-size:9px;color:var(--t3)">${r}</span>
+          </div>`).join('')}
+        </div>
+        <div class="phone-nav">
+          ${[['◎','Feed',true],['⬡','Command',false],['⇉','Pipeline',false],['◈','Budget',false]].map(([i,l,a])=>`
+          <div class="phone-nav-btn" style="${a?'background:rgba(59,130,246,0.1);':''}">
+            <div class="phone-nav-icon" style="color:${a?'#60a5fa':'var(--t3)'}">${i}</div>
+            <div class="phone-nav-lbl" style="color:${a?'#60a5fa':'var(--t3)'}">${l}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <p class="caption" style="text-align:center;margin-top:8px">Main feed + approvals</p>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FULL SCALE VISION -->
+<div class="container">
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Year 10 Scale — 24 Agents</div>
+    <div class="section-sub">The full picture. Every agent, every venture, every layer.</div>
+  </div>
+  <div class="card-grad" style="padding:32px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px">
+      <div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:16px">Venture Roadmap</div>
+        ${[
+          {v:'V1',c:'#3b82f6',n:'Digital Products',s:'Active · Etsy, Gumroad, templates',p:40},
+          {v:'V2',c:'#8b5cf6',n:'AI Content Repurposer SaaS',s:'Post-V1 revenue · $29–79/month',p:0},
+          {v:'V3',c:'#06b6d4',n:'Family Command Dashboard',s:'Year 3 · $29–49/month',p:0},
+          {v:'V4',c:'#10b981',n:'Platform as a Service',s:'Year 4+ · API + white label',p:0},
+        ].map(({v,c,n,s,p})=>`
+        <div style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:7px">
+              <span class="badge badge-${v.toLowerCase()}">${v}</span>
+              <span style="font-size:12px;font-weight:500;color:var(--t1)">${n}</span>
+            </div>
+            <span style="font-size:11px;color:${p>0?c:'var(--t3)'}">Stage ${p>0?'A':'—'}</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:${p||2}%;background:linear-gradient(90deg,${c}60,${c});min-width:${p?0:0}px"></div></div>
+          <div style="font-size:10px;color:var(--t3);margin-top:3px">${s}</div>
+        </div>`).join('')}
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:16px">Agent Count by Layer</div>
+        ${[
+          ['Ownership (Nico + Leo)','2','#6366f1'],
+          ['Executive (Elena)','1','#3b82f6'],
+          ['Leads (1 per venture + Leo\'s)','5','#8b5cf6'],
+          ['V1 Team (Mila, Marco, Maya)','3','#3b82f6'],
+          ['V2 SaaS Team','3','#8b5cf6'],
+          ['V3 Dashboard Team','3','#06b6d4'],
+          ['V4 PaaS Team','3','#10b981'],
+          ["Leo's Finance Team",'4','#f59e0b'],
+        ].map(([l,n,c])=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;color:var(--t2)">${l}</span>
+          <span style="font-size:14px;font-weight:700;color:${c}">${n}</span>
+        </div>`).join('')}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;margin-top:2px">
+          <span style="font-size:13px;font-weight:600;color:var(--t1)">Total</span>
+          <span style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">24</span>
+        </div>
+      </div>
+    </div>
+    <!-- Architecture callout -->
+    <div style="border-radius:10px;padding:16px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Architecture Principles</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:11px;color:var(--t2)">
+        <div>✦ One device, one agent. No exceptions.</div>
+        <div>✦ Skills are unique — tasks cross team boundaries, agents don't duplicate.</div>
+        <div>✦ Maya publishes for all 4 ventures. One agent, all platforms.</div>
+        <div>✦ Leo's team reviews every product twice — precheck and final scan.</div>
+        <div>✦ Elena manages leads, not individuals. Leads manage teams.</div>
+        <div>✦ Nexus built for 24 agents from day one. Zero schema changes at scale.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<div class="container" style="padding-bottom:60px;text-align:center">
+  <div class="logo-mark" style="margin:0 auto 12px;width:36px;height:36px;font-size:16px">Q</div>
+  <div style="font-size:14px;font-weight:600;color:var(--t1)">Quorbz Nexus</div>
+  <div style="font-size:12px;color:var(--t3);margin-top:4px">Mission Control · github.com/quorbz/quorbz-nexus</div>
+  <div style="font-size:11px;color:var(--t4);margin-top:24px">Built by Nico · Quorbz LLC · April 2026</div>
+</div>
+
+</body>
+</html>

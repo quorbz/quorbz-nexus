@@ -12,12 +12,11 @@ interface Incident {
   createdAt: string;
 }
 
-// ── Mock network state — replace with live API data ────────────────────────
 const MOCK_WG_CLIENTS = [
-  { name: 'Benjamin (iPhone)',    ip: '10.0.0.2', lastHandshake: '2 min ago',  status: 'connected'    },
-  { name: 'Benjamin (MacBook)',   ip: '10.0.0.3', lastHandshake: '14 min ago', status: 'connected'    },
-  { name: 'Elena (DL360)',        ip: '10.0.0.5', lastHandshake: '1 min ago',  status: 'connected'    },
-  { name: 'Leo (DL380)',          ip: '10.0.0.6', lastHandshake: '1 min ago',  status: 'connected'    },
+  { name: 'Benjamin (iPhone)',  ip: '10.0.0.2', lastHandshake: '2 min ago',  status: 'connected' },
+  { name: 'Benjamin (MacBook)', ip: '10.0.0.3', lastHandshake: '14 min ago', status: 'connected' },
+  { name: 'Elena (DL360)',      ip: '10.0.0.5', lastHandshake: '1 min ago',  status: 'connected' },
+  { name: 'Leo (DL380)',        ip: '10.0.0.6', lastHandshake: '1 min ago',  status: 'connected' },
 ];
 
 const MOCK_CRED_ROTATION = [
@@ -27,11 +26,20 @@ const MOCK_CRED_ROTATION = [
   { name: 'ONECLI_VAULT_TOKEN',       lastRotated: '2026-02-01', daysAgo: 73, status: 'overdue' },
 ];
 
-const SEVERITY_COLORS: Record<string, string> = {
-  low:      'text-gray-400 bg-gray-800 border-gray-700',
-  medium:   'text-yellow-400 bg-yellow-900/20 border-yellow-800/40',
-  high:     'text-orange-400 bg-orange-900/20 border-orange-800/40',
-  critical: 'text-red-400 bg-red-900/20 border-red-800/40',
+const FIREWALL_ROWS = [
+  { machine: 'Nico (Mac Studio)',  status: 'Compliant',    ok: true  },
+  { machine: 'Elena (DL360)',      status: 'Compliant',    ok: true  },
+  { machine: 'Leo (DL380)',        status: 'Compliant',    ok: true  },
+  { machine: 'Mila (Mac Studio)',  status: 'Not verified', ok: false },
+  { machine: 'Marco (Mac Mini)',   status: 'Not verified', ok: false },
+  { machine: 'Maya (Mac Mini)',    status: 'Not verified', ok: false },
+];
+
+const SEVERITY_STYLE: Record<string, { bg: string; border: string; color: string }> = {
+  low:      { bg: 'rgba(71,85,105,0.2)',   border: 'rgba(71,85,105,0.3)',   color: '#94a3b8' },
+  medium:   { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', color: '#fbbf24' },
+  high:     { bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.25)', color: '#fb923c' },
+  critical: { bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#f87171' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -48,8 +56,12 @@ export default function SecurityPage() {
   const [loading, setLoading] = useState(true);
 
   async function load() {
-    const inc = await api.get<Incident[]>('/security/incidents?acknowledged=false');
-    setIncidents(inc);
+    try {
+      const inc = await api.get<Incident[]>('/security/incidents?acknowledged=false');
+      setIncidents(inc);
+    } catch {
+      setIncidents([]);
+    }
     setLoading(false);
   }
 
@@ -61,51 +73,46 @@ export default function SecurityPage() {
   useEffect(() => { load(); }, []);
 
   const criticalCount = incidents.filter((i) => i.severity === 'critical').length;
-  const highCount = incidents.filter((i) => i.severity === 'high').length;
+  const highCount     = incidents.filter((i) => i.severity === 'high').length;
 
   return (
     <div>
-      <h1 className="text-lg font-semibold text-gray-200 mb-6">Security / Network</h1>
+      <h1 className="text-lg font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Security / Network</h1>
+      <p className="text-sm mb-6" style={{ color: 'var(--text-muted)' }}>
+        Zero-trust posture · WireGuard VPN · Credential rotation · Incident log
+      </p>
 
       {/* Summary tiles */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="card text-center">
-          <div className={`text-2xl font-bold ${criticalCount > 0 ? 'text-red-400' : 'text-gray-600'}`}>
-            {criticalCount}
+        {[
+          { label: 'Critical', value: String(criticalCount), color: criticalCount > 0 ? '#f87171' : '#475569' },
+          { label: 'High',     value: String(highCount),     color: highCount > 0 ? '#fb923c' : '#475569'     },
+          { label: 'Machines Reachable', value: '3/6', color: '#f59e0b' },
+          { label: 'VPN Clients',        value: '4',   color: '#34d399' },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="card text-center" style={{ padding: '16px' }}>
+            <div className="text-2xl font-bold mb-1" style={{ color }}>{value}</div>
+            <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</div>
           </div>
-          <div className="text-xs text-gray-500 mt-1">Critical</div>
-        </div>
-        <div className="card text-center">
-          <div className={`text-2xl font-bold ${highCount > 0 ? 'text-orange-400' : 'text-gray-600'}`}>
-            {highCount}
-          </div>
-          <div className="text-xs text-gray-500 mt-1">High</div>
-        </div>
-        <div className="card text-center">
-          <div className="text-2xl font-bold text-green-400">6/6</div>
-          <div className="text-xs text-gray-500 mt-1">Machines Reachable</div>
-        </div>
-        <div className="card text-center">
-          <div className="text-2xl font-bold text-green-400">4</div>
-          <div className="text-xs text-gray-500 mt-1">VPN Clients Online</div>
-        </div>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
         {/* WireGuard VPN */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">WireGuard VPN</h2>
-            <span className="badge-pending text-xs">⏳ Live data — Stage 3</span>
+        <div className="card" style={{ padding: '16px' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="section-label">WireGuard VPN</div>
+            <span className="badge-pending text-xs">⏳ Live — Stage 3</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {MOCK_WG_CLIENTS.map((c) => (
-              <div key={c.name} className="flex items-center justify-between text-sm">
+              <div key={c.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                  <span className="text-gray-200">{c.name}</span>
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#34d399', boxShadow: '0 0 6px rgba(52,211,153,0.6)' }} />
+                  <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{c.name}</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-gray-500">
+                <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
                   <span className="font-mono">{c.ip}</span>
                   <span>{c.lastHandshake}</span>
                 </div>
@@ -115,48 +122,50 @@ export default function SecurityPage() {
         </div>
 
         {/* Firewall posture */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Firewall Posture</h2>
-            <span className="badge-pending text-xs">⏳ Live data — Stage 3</span>
+        <div className="card" style={{ padding: '16px' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="section-label">Firewall Posture</div>
+            <span className="badge-pending text-xs">⏳ Live — Stage 3</span>
           </div>
-          <div className="space-y-2 text-sm">
-            {[
-              { machine: 'Elena (DL360)',        status: 'Compliant',     ok: true  },
-              { machine: 'Leo (DL380)',           status: 'Compliant',     ok: true  },
-              { machine: 'Nico (Mac Studio)',     status: 'Compliant',     ok: true  },
-              { machine: 'Mila (Mac Studio)',     status: 'Not verified',  ok: false },
-              { machine: 'Marco (Mac Mini)',      status: 'Not verified',  ok: false },
-              { machine: 'Maya (Mac Mini)',       status: 'Not verified',  ok: false },
-            ].map((row) => (
-              <div key={row.machine} className="flex items-center justify-between">
-                <span className="text-gray-300">{row.machine}</span>
-                <span className={row.ok ? 'text-green-400 text-xs' : 'text-yellow-400 text-xs'}>
+          <div className="space-y-2">
+            {FIREWALL_ROWS.map((row) => (
+              <div key={row.machine} className="flex items-center justify-between text-sm">
+                <span style={{ color: 'var(--text-secondary)' }}>{row.machine}</span>
+                <span
+                  className="text-xs font-medium px-2 py-0.5 rounded-md"
+                  style={row.ok
+                    ? { background: 'rgba(16,185,129,0.12)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }
+                    : { background: 'rgba(245,158,11,0.1)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.2)' }
+                  }
+                >
                   {row.status}
                 </span>
               </div>
             ))}
           </div>
-          <div className="text-xs text-gray-600 mt-3">
-            "Not verified" = SSH access not yet established. Resolves when machine keys are loaded.
+          <div className="text-xs mt-3" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
+            Not verified = SSH access not yet established. Resolves when machine keys are loaded.
           </div>
         </div>
       </div>
 
-      {/* Credential rotation tracker */}
-      <div className="card mb-6">
-        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Credential Rotation</h2>
-        <div className="space-y-2">
+      {/* Credential rotation */}
+      <div className="card mb-6" style={{ padding: '16px 20px' }}>
+        <div className="section-label mb-4">Credential Rotation</div>
+        <div className="space-y-2.5">
           {MOCK_CRED_ROTATION.map((c) => (
-            <div key={c.name} className="flex items-center justify-between text-sm">
-              <div className="text-gray-300">{c.name}</div>
+            <div key={c.name} className="flex items-center justify-between">
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{c.name}</span>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-500">{c.daysAgo}d ago</span>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded ${
-                  c.status === 'ok'      ? 'bg-green-900/30 text-green-400' :
-                  c.status === 'warn'    ? 'bg-yellow-900/30 text-yellow-400' :
-                                           'bg-red-900/30 text-red-400'
-                }`}>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{c.daysAgo}d ago</span>
+                <span
+                  className="text-xs font-medium px-2 py-0.5 rounded-md"
+                  style={
+                    c.status === 'ok'      ? { background: 'rgba(16,185,129,0.12)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' } :
+                    c.status === 'warn'    ? { background: 'rgba(245,158,11,0.1)',  color: '#fbbf24', border: '1px solid rgba(245,158,11,0.2)'  } :
+                                             { background: 'rgba(239,68,68,0.1)',   color: '#f87171', border: '1px solid rgba(239,68,68,0.2)'   }
+                  }
+                >
                   {c.status === 'ok' ? '✓ Current' : c.status === 'warn' ? '⚠ Rotate Soon' : '✗ Overdue'}
                 </span>
               </div>
@@ -165,49 +174,57 @@ export default function SecurityPage() {
         </div>
       </div>
 
-      {/* Live incident log */}
-      <div className="card">
-        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+      {/* Incident log */}
+      <div className="card" style={{ padding: '16px 20px' }}>
+        <div className="section-label mb-4">
           Open Incidents
-          {incidents.length > 0 && <span className="ml-2 text-red-400">({incidents.length})</span>}
-        </h2>
+          {incidents.length > 0 && <span style={{ color: '#f87171', marginLeft: '6px' }}>({incidents.length})</span>}
+        </div>
 
         {loading ? (
-          <div className="text-sm text-gray-600">Loading…</div>
+          <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading…</div>
         ) : incidents.length === 0 ? (
-          <div className="text-sm text-gray-600">No open incidents — all clear</div>
+          <div className="text-sm" style={{ color: 'var(--text-muted)' }}>No open incidents — all clear</div>
         ) : (
           <div className="space-y-2">
-            {incidents.map((inc) => (
-              <div key={inc.id} className={`rounded p-3 border text-sm ${SEVERITY_COLORS[inc.severity] ?? ''}`}>
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-xs font-medium uppercase">{inc.severity}</span>
-                      <span className="text-xs text-gray-500">{TYPE_LABELS[inc.type] ?? inc.type}</span>
-                      <span className="text-xs text-gray-600">{inc.source}</span>
+            {incidents.map((inc) => {
+              const sty = SEVERITY_STYLE[inc.severity] ?? SEVERITY_STYLE.low;
+              return (
+                <div
+                  key={inc.id}
+                  className="rounded-lg p-3"
+                  style={{ background: sty.bg, border: `1px solid ${sty.border}` }}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-xs font-medium uppercase" style={{ color: sty.color }}>{inc.severity}</span>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{TYPE_LABELS[inc.type] ?? inc.type}</span>
+                        <span className="text-xs font-mono" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>{inc.source}</span>
+                      </div>
+                      <div className="text-sm" style={{ color: 'var(--text-primary)' }}>{inc.description}</div>
+                      <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                        {new Date(inc.createdAt).toLocaleString()}
+                      </div>
                     </div>
-                    <div className="text-gray-200">{inc.description}</div>
-                    <div className="text-xs text-gray-500 mt-1">{new Date(inc.createdAt).toLocaleString()}</div>
+                    <button
+                      onClick={() => acknowledge(inc.id)}
+                      className="text-xs whitespace-nowrap rounded-lg px-2 py-0.5 transition-colors"
+                      style={{ color: 'var(--text-muted)', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)' }}
+                    >
+                      Ack
+                    </button>
                   </div>
-                  <button
-                    onClick={() => acknowledge(inc.id)}
-                    className="text-xs text-gray-500 hover:text-gray-300 whitespace-nowrap border border-gray-700 rounded px-2 py-0.5"
-                  >
-                    Ack
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
-        <div className="mt-4 pt-4 border-t border-gray-800">
-          <div className="text-xs text-gray-600 space-y-0.5">
-            <div>• SSH fail counter, outbound anomaly detector, file integrity monitoring → Stage 3</div>
-            <div>• One-click agent isolation → Stage 3</div>
-            <div>• Loki log search → Stage 3</div>
-          </div>
+        <div className="mt-4 pt-4 text-xs space-y-0.5" style={{ borderTop: '1px solid var(--border-subtle)', color: 'var(--text-muted)', opacity: 0.7 }}>
+          <div>• SSH fail counter, outbound anomaly detector, file integrity monitoring → Stage 3</div>
+          <div>• One-click agent isolation → Stage 3</div>
+          <div>• Loki log search → Stage 3</div>
         </div>
       </div>
     </div>
