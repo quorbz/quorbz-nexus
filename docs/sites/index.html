@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quorbz — Customer Site Mockups · Year 10</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #060a14;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    padding: 32px 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #fff;
+    box-shadow: 0 0 20px rgba(59,130,246,0.4);
+  }
+  .header-meta { font-size: 13px; color: #475569; }
+
+  /* Hero */
+  .hero {
+    padding: 80px 40px 60px;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .hero-label {
+    display: inline-block;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #60a5fa;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 4px 12px; border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 17px; color: #64748b; line-height: 1.7; margin-bottom: 8px;
+  }
+  .hero-note {
+    font-size: 12px; color: #334155;
+    margin-top: 8px;
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 0 40px 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .venture-card {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .venture-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-color);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-color);
+  }
+
+  .card-hero {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-hero-bg {
+    position: absolute; inset: 0;
+    background: var(--hero-bg);
+  }
+  .card-hero-content {
+    position: relative; z-index: 1; text-align: center; padding: 24px;
+  }
+  .card-hero-icon {
+    font-size: 48px; margin-bottom: 12px; display: block;
+  }
+  .card-hero-headline {
+    font-size: 22px; font-weight: 700; color: #f1f5f9;
+    line-height: 1.2; letter-spacing: -0.02em;
+  }
+
+  .card-body {
+    padding: 24px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .venture-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px;
+    background: var(--badge-bg); color: var(--badge-text);
+    border: 1px solid var(--badge-border);
+    margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 18px; font-weight: 700; color: #f1f5f9;
+    margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+  .card-desc {
+    font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;
+  }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+  }
+  .tag {
+    font-size: 11px; color: #475569;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .card-cta {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border-radius: 8px;
+    background: var(--accent-bg); color: var(--accent-text);
+    border: 1px solid var(--accent-border);
+    cursor: pointer; text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .launch-label {
+    font-size: 11px; color: #334155;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 32px 40px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    text-align: center;
+    font-size: 12px; color: #334155;
+  }
+  .footer a { color: #475569; text-decoration: none; }
+  .footer a:hover { color: #60a5fa; }
+
+  @media (max-width: 600px) {
+    .header, .hero, .grid { padding-left: 20px; padding-right: 20px; }
+    .hero { padding-top: 48px; padding-bottom: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="logo-mark">Q</div>
+    <div>
+      <div style="font-weight:700;font-size:15px;color:#f1f5f9;">Quorbz</div>
+      <div style="font-size:11px;color:#475569;">Customer Site Mockups</div>
+    </div>
+  </div>
+  <div class="header-meta">Year 10 · Design Preview · Internal Review</div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Year 10 Vision · 4 Ventures · Pure Design Mockup</div>
+  <h1>What the world sees when they find us</h1>
+  <p>Four customer-facing products. One design language. Each built to convert on first impression.</p>
+  <div class="hero-note">No branding finalized · Logo placeholders · Review purpose only</div>
+</div>
+
+<div class="grid">
+
+  <!-- V1 -->
+  <a class="venture-card" href="v1-store.html"
+     style="--accent-color:rgba(59,130,246,0.6);--accent-bg:rgba(59,130,246,0.12);--accent-text:#93c5fd;--accent-border:rgba(59,130,246,0.25);--badge-bg:rgba(59,130,246,0.12);--badge-text:#93c5fd;--badge-border:rgba(59,130,246,0.2);">
+    <div class="card-hero">
+      <div class="card-hero-bg" style="--hero-bg:radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.2) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.15) 0%, transparent 50%), #0b1120;"></div>
+      <div class="card-hero-content">
+        <span class="card-hero-icon">🛍</span>
+        <div class="card-hero-headline">Digital Products Store</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="venture-badge">Venture 1 · Live at Launch</div>
+      <div class="card-title">quorbz.com/store</div>
+      <div class="card-desc">Premium AI-crafted digital downloads. Planners, wall art, social media kits, Notion templates, Canva bundles. Instant delivery. No subscriptions required.</div>
+      <div class="card-tags">
+        <span class="tag">Etsy → Own Store</span>
+        <span class="tag">Instant Download</span>
+        <span class="tag">500+ Products</span>
+        <span class="tag">AI-crafted</span>
+      </div>
+      <div class="card-cta">
+        <span class="btn">View Mockup →</span>
+        <span class="launch-label">Year 1 launch</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- V2 -->
+  <a class="venture-card" href="v2-saas.html"
+     style="--accent-color:rgba(139,92,246,0.6);--accent-bg:rgba(139,92,246,0.12);--accent-text:#c4b5fd;--accent-border:rgba(139,92,246,0.25);--badge-bg:rgba(139,92,246,0.12);--badge-text:#c4b5fd;--badge-border:rgba(139,92,246,0.2);">
+    <div class="card-hero">
+      <div class="card-hero-bg" style="--hero-bg:radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.2) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.1) 0%, transparent 50%), #0b1120;"></div>
+      <div class="card-hero-content">
+        <span class="card-hero-icon">⚡</span>
+        <div class="card-hero-headline">AI Content Repurposer</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="venture-badge">Venture 2 · SaaS</div>
+      <div class="card-title">repurpose.quorbz.com</div>
+      <div class="card-desc">Paste a URL. Get 30+ ready-to-post pieces across every major platform in seconds. Built for creators, marketers, and agencies who refuse to post the same thing twice.</div>
+      <div class="card-tags">
+        <span class="tag">$29–$79/mo</span>
+        <span class="tag">30+ Platforms</span>
+        <span class="tag">Voice Matching</span>
+        <span class="tag">API Access</span>
+      </div>
+      <div class="card-cta">
+        <span class="btn">View Mockup →</span>
+        <span class="launch-label">Year 2 launch</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- V3 -->
+  <a class="venture-card" href="v3-family.html"
+     style="--accent-color:rgba(6,182,212,0.6);--accent-bg:rgba(6,182,212,0.1);--accent-text:#67e8f9;--accent-border:rgba(6,182,212,0.25);--badge-bg:rgba(6,182,212,0.1);--badge-text:#67e8f9;--badge-border:rgba(6,182,212,0.2);">
+    <div class="card-hero">
+      <div class="card-hero-bg" style="--hero-bg:radial-gradient(ellipse at 50% 30%, rgba(6,182,212,0.2) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(16,185,129,0.1) 0%, transparent 50%), #0b1120;"></div>
+      <div class="card-hero-content">
+        <span class="card-hero-icon">🏠</span>
+        <div class="card-hero-headline">Family Command Dashboard</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="venture-badge">Venture 3 · Year 3</div>
+      <div class="card-title">family.quorbz.com</div>
+      <div class="card-desc">The privacy-first family hub. Shared calendar, live location, smart shopping, password health, and smart home — with zero ads and zero data selling. Your family, your data.</div>
+      <div class="card-tags">
+        <span class="tag">$29–$49/mo</span>
+        <span class="tag">Zero Ads</span>
+        <span class="tag">End-to-End Encrypted</span>
+        <span class="tag">Anti–Big Tech</span>
+      </div>
+      <div class="card-cta">
+        <span class="btn">View Mockup →</span>
+        <span class="launch-label">Year 3 launch</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- V4 -->
+  <a class="venture-card" href="v4-paas.html"
+     style="--accent-color:rgba(16,185,129,0.6);--accent-bg:rgba(16,185,129,0.1);--accent-text:#6ee7b7;--accent-border:rgba(16,185,129,0.25);--badge-bg:rgba(16,185,129,0.1);--badge-text:#6ee7b7;--badge-border:rgba(16,185,129,0.2);">
+    <div class="card-hero">
+      <div class="card-hero-bg" style="--hero-bg:radial-gradient(ellipse at 20% 60%, rgba(16,185,129,0.2) 0%, transparent 60%), radial-gradient(ellipse at 90% 10%, rgba(6,182,212,0.1) 0%, transparent 50%), #0b1120;"></div>
+      <div class="card-hero-content">
+        <span class="card-hero-icon">⬡</span>
+        <div class="card-hero-headline">Developer Platform</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="venture-badge">Venture 4 · PaaS</div>
+      <div class="card-title">platform.quorbz.com</div>
+      <div class="card-desc">The infrastructure layer for AI-native products. Agent orchestration, multi-model routing, persistent memory, and white-label tooling — as a platform. Build once, scale anywhere.</div>
+      <div class="card-tags">
+        <span class="tag">REST API</span>
+        <span class="tag">Agent Orchestration</span>
+        <span class="tag">White Label</span>
+        <span class="tag">Usage-based</span>
+      </div>
+      <div class="card-cta">
+        <span class="btn">View Mockup →</span>
+        <span class="launch-label">Year 4 launch</span>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<footer class="footer">
+  <div style="margin-bottom:8px;">
+    <a href="../index.html">← Back to Nexus Portfolio</a>
+    &nbsp;·&nbsp;
+    <a href="v1-store.html">V1 Store</a>
+    &nbsp;·&nbsp;
+    <a href="v2-saas.html">V2 SaaS</a>
+    &nbsp;·&nbsp;
+    <a href="v3-family.html">V3 Family</a>
+    &nbsp;·&nbsp;
+    <a href="v4-paas.html">V4 PaaS</a>
+  </div>
+  Quorbz LLC · Customer Site Design Mockups · Internal Review · Not for public distribution
+</footer>
+
+</body>
+</html>

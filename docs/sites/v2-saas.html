@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repurpose — One piece of content. Thirty platforms.</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #8b5cf6;
+    --accent-light: #a78bfa;
+    --accent-dark: #6d28d9;
+    --accent2: #3b82f6;
+    --bg: #060a14;
+    --surface: #0b1120;
+    --elevated: #111827;
+    --border: rgba(255,255,255,0.06);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,10,20,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+    box-shadow: 0 0 16px rgba(139,92,246,0.4);
+  }
+  .nav-brand { font-weight: 700; font-size: 16px; color: var(--text-primary); }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; transition: color 0.15s; text-decoration: none; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .btn-ghost { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; }
+  .btn-primary { font-size: 13px; font-weight: 600; color: #fff; padding: 7px 16px; border-radius: 8px; background: linear-gradient(135deg, #8b5cf6, #6d28d9); border: 1px solid rgba(139,92,246,0.4); box-shadow: 0 0 20px rgba(139,92,246,0.35); cursor: pointer; white-space: nowrap; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 48px 80px;
+    text-align: center; max-width: 860px; margin: 0 auto;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 500px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(139,92,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-light); background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25);
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5.5vw, 72px); font-weight: 900; line-height: 1.0;
+    letter-spacing: -0.04em; margin-bottom: 20px;
+  }
+  .hero h1 em { font-style: normal; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { font-size: 18px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+  /* INPUT HERO */
+  .hero-input-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(139,92,246,0.3);
+    border-radius: 16px; padding: 20px 24px;
+    display: flex; align-items: center; gap: 14px;
+    max-width: 680px; margin: 0 auto 16px;
+    box-shadow: 0 0 0 1px rgba(139,92,246,0.1), 0 20px 60px rgba(0,0,0,0.4);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .hero-input-box:focus-within {
+    border-color: rgba(139,92,246,0.6);
+    box-shadow: 0 0 0 4px rgba(139,92,246,0.12), 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .hero-input-icon { font-size: 20px; flex-shrink: 0; }
+  .hero-input {
+    flex: 1; background: none; border: none; outline: none;
+    font-size: 16px; color: var(--text-primary);
+  }
+  .hero-input::placeholder { color: var(--text-muted); }
+  .hero-repurpose-btn {
+    font-size: 14px; font-weight: 700; padding: 10px 20px; border-radius: 10px;
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    color: #fff; border: none; cursor: pointer; white-space: nowrap;
+    box-shadow: 0 0 20px rgba(139,92,246,0.4);
+    flex-shrink: 0;
+  }
+  .hero-input-types {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    font-size: 12px; color: var(--text-muted); margin-bottom: 40px;
+  }
+  .hero-input-types span { display: flex; align-items: center; gap: 5px; }
+
+  /* OUTPUT PREVIEW */
+  .output-preview {
+    max-width: 860px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  .output-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 14px;
+    text-align: left;
+  }
+  .output-platform {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+  }
+  .output-platform-icon { font-size: 16px; }
+  .output-platform-name { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
+  .output-lines { display: flex; flex-direction: column; gap: 5px; }
+  .output-line {
+    height: 8px; border-radius: 4px;
+    background: rgba(255,255,255,0.1);
+  }
+  .output-line.short { width: 60%; }
+  .output-line.medium { width: 85%; }
+  .output-line.full { width: 100%; }
+  .output-line.accent { background: rgba(139,92,246,0.35); }
+
+  /* STATS */
+  .stats-bar {
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; justify-content: center; gap: 80px; flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-value { font-size: 36px; font-weight: 900; letter-spacing: -0.03em; background: linear-gradient(135deg, var(--accent-light), #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  /* HOW IT WORKS */
+  .section { max-width: 1280px; margin: 0 auto; padding: 80px 48px; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 12px; }
+  .section-title { font-size: clamp(28px, 3vw, 44px); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .section-sub { font-size: 16px; color: var(--text-secondary); margin-bottom: 48px; max-width: 560px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; position: relative; }
+  .steps::before {
+    content: '';
+    position: absolute; top: 32px; left: 17%; right: 17%; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(139,92,246,0.4), rgba(59,130,246,0.4), transparent);
+  }
+  .step { text-align: center; padding: 0 16px; }
+  .step-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; color: var(--accent-light);
+    margin: 0 auto 20px;
+  }
+  .step-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+  .step-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* PLATFORMS */
+  .platform-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .platform-chip {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 12px;
+    display: flex; align-items: center; gap: 10px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .platform-chip:hover { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06); }
+  .platform-chip-icon { font-size: 20px; flex-shrink: 0; }
+  .platform-chip-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .platform-chip-count { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .feature-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; display: flex; gap: 20px;
+  }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+  }
+  .feature-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .feature-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* PRICING */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .price-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px 28px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .price-card.featured {
+    background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.06));
+    border-color: rgba(139,92,246,0.4);
+    box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 20px 60px rgba(0,0,0,0.3);
+    transform: scale(1.03);
+    position: relative;
+  }
+  .featured-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 20px;
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; white-space: nowrap;
+  }
+  .price-tier { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-light); margin-bottom: 8px; }
+  .price-amount { font-size: 44px; font-weight: 900; letter-spacing: -0.04em; color: var(--text-primary); margin-bottom: 4px; }
+  .price-amount span { font-size: 18px; font-weight: 400; color: var(--text-muted); }
+  .price-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+  .price-features { list-style: none; margin-bottom: 28px; }
+  .price-features li { font-size: 13px; color: var(--text-secondary); padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 8px; }
+  .price-features li::before { content: '✓'; color: var(--accent-light); font-weight: 700; flex-shrink: 0; }
+  .price-cta {
+    width: 100%; padding: 12px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    border: 1px solid rgba(139,92,246,0.3);
+    background: rgba(139,92,246,0.1); color: var(--accent-light);
+    transition: background 0.2s;
+  }
+  .price-cta.featured-btn {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff;
+    border-color: rgba(139,92,246,0.5);
+    box-shadow: 0 0 20px rgba(139,92,246,0.3);
+  }
+
+  /* TESTIMONIALS */
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .testi-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+  }
+  .testi-stars { color: #fbbf24; font-size: 14px; margin-bottom: 12px; }
+  .testi-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 10px; }
+  .testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .testi-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .testi-role { font-size: 11px; color: var(--text-muted); }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.06));
+    border-top: 1px solid rgba(139,92,246,0.15); border-bottom: 1px solid rgba(139,92,246,0.15);
+    padding: 80px 48px; text-align: center;
+  }
+  .cta-section h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+  .cta-section p { font-size: 16px; color: var(--text-secondary); margin-bottom: 32px; }
+  .cta-section .btn-large { font-size: 16px; padding: 14px 32px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border: none; cursor: pointer; box-shadow: 0 0 30px rgba(139,92,246,0.4); }
+  .cta-note { font-size: 12px; color: var(--text-muted); margin-top: 12px; }
+
+  /* FOOTER */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .footer-text { font-size: 12px; color: var(--text-muted); }
+
+  .review-note { position: fixed; bottom: 16px; right: 16px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 10px; padding: 8px 14px; font-size: 11px; color: var(--accent-light); backdrop-filter: blur(12px); z-index: 999; }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    .hero { padding: 60px 20px 48px; }
+    .output-preview { grid-template-columns: repeat(2, 1fr); }
+    .stats-bar { gap: 32px; padding: 32px 20px; }
+    .section { padding: 60px 20px; }
+    .steps, .platform-grid, .features-grid, .pricing-grid, .testi-grid { grid-template-columns: 1fr; }
+    .price-card.featured { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">Q</div>
+    <div class="nav-brand">Repurpose</div>
+  </div>
+  <div class="nav-links">
+    <a href="#">Features</a>
+    <a href="#">Pricing</a>
+    <a href="#">Examples</a>
+    <a href="#">Docs</a>
+    <a href="#">Blog</a>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Start Free →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">✦ Powered by Quorbz AI</div>
+  <h1>One piece of content.<br><em>Thirty platforms.</em><br>Two seconds.</h1>
+  <p class="hero-sub">Paste a YouTube URL, blog post, or podcast transcript. Get 30+ ready-to-post pieces across every major platform — formatted, hashtagged, and written in your voice.</p>
+
+  <div class="hero-input-box">
+    <span class="hero-input-icon">🔗</span>
+    <input class="hero-input" type="text" placeholder="Paste a URL or drop your transcript here…">
+    <button class="hero-repurpose-btn">Repurpose →</button>
+  </div>
+  <div class="hero-input-types">
+    <span>▶ YouTube</span>
+    <span>✍ Blog Post</span>
+    <span>🎙 Podcast</span>
+    <span>📄 Transcript</span>
+  </div>
+
+  <div class="output-preview">
+    <div class="output-card">
+      <div class="output-platform"><span class="output-platform-icon">📸</span><span class="output-platform-name">Instagram Caption</span></div>
+      <div class="output-lines">
+        <div class="output-line full accent"></div>
+        <div class="output-line full"></div>
+        <div class="output-line medium"></div>
+        <div class="output-line short"></div>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-platform"><span class="output-platform-icon">𝕏</span><span class="output-platform-name">Twitter Thread</span></div>
+      <div class="output-lines">
+        <div class="output-line full accent"></div>
+        <div class="output-line full"></div>
+        <div class="output-line full"></div>
+        <div class="output-line medium"></div>
+        <div class="output-line short"></div>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-platform"><span class="output-platform-icon">💼</span><span class="output-platform-name">LinkedIn Post</span></div>
+      <div class="output-lines">
+        <div class="output-line full accent"></div>
+        <div class="output-line full"></div>
+        <div class="output-line medium"></div>
+        <div class="output-line full"></div>
+        <div class="output-line short"></div>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-platform"><span class="output-platform-icon">📧</span><span class="output-platform-name">Email Newsletter</span></div>
+      <div class="output-lines">
+        <div class="output-line full accent"></div>
+        <div class="output-line full"></div>
+        <div class="output-line full"></div>
+        <div class="output-line medium"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-value">2.4M+</div><div class="stat-label">Pieces Generated</div></div>
+  <div class="stat-item"><div class="stat-value">8,400</div><div class="stat-label">Active Creators</div></div>
+  <div class="stat-item"><div class="stat-value">30+</div><div class="stat-label">Platforms Supported</div></div>
+  <div class="stat-item"><div class="stat-value">47 min</div><div class="stat-label">Avg Time Saved / Post</div></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+  <div class="section-label">How It Works</div>
+  <div class="section-title">Three steps. One URL.</div>
+  <div class="section-sub">The whole workflow collapses into a single action. No editing. No reformatting. No copying and pasting into six different tools.</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Paste anything</div>
+      <div class="step-desc">A YouTube link, a blog URL, a podcast RSS feed, or raw text. We extract the content automatically — no copy-paste, no transcription.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Pick your platforms</div>
+      <div class="step-desc">Select which platforms to publish to, or use a saved preset. We handle the formatting rules, character limits, hashtags, and tone for each one.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Publish or schedule</div>
+      <div class="step-desc">Review and post directly from Repurpose, or push to Buffer, Hootsuite, or Zapier. Your entire back-catalog in a morning.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PLATFORMS -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Platforms</div>
+  <div class="section-title">Every channel. One tool.</div>
+  <div class="section-sub">30+ platform formats supported. Each one is natively formatted — not just copy-pasted with a different label.</div>
+  <div class="platform-grid">
+    <div class="platform-chip"><span class="platform-chip-icon">📸</span><div><div class="platform-chip-name">Instagram</div><div class="platform-chip-count">Caption · Stories · Carousel</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">𝕏</span><div><div class="platform-chip-name">Twitter / X</div><div class="platform-chip-count">Single · Thread</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">💼</span><div><div class="platform-chip-name">LinkedIn</div><div class="platform-chip-count">Post · Article Intro</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">🎵</span><div><div class="platform-chip-name">TikTok</div><div class="platform-chip-count">Script · Caption</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">📌</span><div><div class="platform-chip-name">Pinterest</div><div class="platform-chip-count">Pin Description</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">📧</span><div><div class="platform-chip-name">Email Newsletter</div><div class="platform-chip-count">Full Draft</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">▶</span><div><div class="platform-chip-name">YouTube</div><div class="platform-chip-count">Description · Tags</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">💬</span><div><div class="platform-chip-name">Facebook</div><div class="platform-chip-count">Post · Group</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">👾</span><div><div class="platform-chip-name">Reddit</div><div class="platform-chip-count">Post · Comment</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">📝</span><div><div class="platform-chip-name">Blog Summary</div><div class="platform-chip-count">SEO-optimized</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">💡</span><div><div class="platform-chip-name">Threads</div><div class="platform-chip-count">Post · Thread</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">🎧</span><div><div class="platform-chip-name">Podcast Notes</div><div class="platform-chip-count">Show Notes · Timestamps</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">📱</span><div><div class="platform-chip-name">SMS / MMS</div><div class="platform-chip-count">160-char optimized</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">⚡</span><div><div class="platform-chip-name">Zapier</div><div class="platform-chip-count">Push anywhere</div></div></div>
+    <div class="platform-chip"><span class="platform-chip-icon">＋</span><div><div class="platform-chip-name">16 more</div><div class="platform-chip-count">Quarterly additions</div></div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Features</div>
+  <div class="section-title">Not just a reformatter.</div>
+  <div class="section-sub">The difference between tools that save you 5 minutes and tools that save you 5 hours.</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <div>
+        <div class="feature-title">Voice Matching</div>
+        <div class="feature-desc">Feed it 5 samples of your existing content. It learns your tone, your sentence length, your vocabulary, your level of formality. Every output sounds like you wrote it.</div>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📐</div>
+      <div>
+        <div class="feature-title">Platform-Native Formatting</div>
+        <div class="feature-desc">Twitter gets threads with numbered hooks. LinkedIn gets paragraphs with strategic line breaks. Instagram gets hashtag banks. TikTok gets scripts with scene cues. Each one plays by the platform's rules.</div>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗓</div>
+      <div>
+        <div class="feature-title">One-Click Scheduling</div>
+        <div class="feature-desc">Connected to Buffer, Hootsuite, and Later. Review your outputs and push to queue in a single click. Or let the AI schedule based on your audience's peak engagement windows.</div>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <div>
+        <div class="feature-title">Bulk Repurpose</div>
+        <div class="feature-desc">Import a YouTube channel, a podcast RSS feed, or a sitemap. Repurpose your entire back-catalog overnight. Agencies use this to onboard new clients in an afternoon instead of a month.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">Simple. No surprises.</div>
+  <div class="section-sub">Three tiers. No feature gates on the things that matter. Cancel any time.</div>
+  <div class="pricing-grid">
+
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-amount">$29<span>/mo</span></div>
+      <div class="price-desc">For solo creators getting started.</div>
+      <ul class="price-features">
+        <li>50 repurposes per month</li>
+        <li>5 platform presets</li>
+        <li>Voice matching (1 profile)</li>
+        <li>Buffer integration</li>
+        <li>Email support</li>
+      </ul>
+      <button class="price-cta">Get Started</button>
+    </div>
+
+    <div class="price-card featured">
+      <div class="featured-badge">Most Popular</div>
+      <div class="price-tier">Pro</div>
+      <div class="price-amount">$49<span>/mo</span></div>
+      <div class="price-desc">For serious creators and marketers.</div>
+      <ul class="price-features">
+        <li>200 repurposes per month</li>
+        <li>All 30+ platforms</li>
+        <li>Voice matching (5 profiles)</li>
+        <li>Buffer, Hootsuite, Later</li>
+        <li>Bulk repurpose (up to 50 pieces)</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="price-cta featured-btn">Start Free Trial</button>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Agency</div>
+      <div class="price-amount">$79<span>/mo</span></div>
+      <div class="price-desc">For teams and agencies managing multiple clients.</div>
+      <ul class="price-features">
+        <li>Unlimited repurposes</li>
+        <li>All 30+ platforms</li>
+        <li>Voice matching (unlimited)</li>
+        <li>All integrations + Zapier</li>
+        <li>Bulk catalog repurpose</li>
+        <li>API access</li>
+        <li>White-label option</li>
+        <li>Dedicated support</li>
+      </ul>
+      <button class="price-cta">Get Started</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">What They're Saying</div>
+  <div class="section-title">Built for people who create for a living.</div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I record one YouTube video a week. By the time I'm done editing, Repurpose has already drafted my newsletter, three tweets, a LinkedIn post, and my podcast show notes. It sounds like me. That's the part I keep telling people."</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:rgba(139,92,246,0.2);">👤</div>
+        <div><div class="testi-name">Jordan K.</div><div class="testi-role">YouTuber · 280K subscribers</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"We manage content for 14 clients. Before this tool, onboarding a new client's back-catalog was a two-week project. Now it's a Tuesday morning. The ROI is completely unreasonable."</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:rgba(59,130,246,0.2);">👤</div>
+        <div><div class="testi-name">Priya M.</div><div class="testi-role">Agency Founder · Social Ladder</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The voice matching is genuinely scary good. I gave it five of my old LinkedIn posts and it immediately figured out that I never use bullet points, I always start with a question, and I swear exactly once per post."</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:rgba(16,185,129,0.2);">👤</div>
+        <div><div class="testi-name">Derek O.</div><div class="testi-role">B2B Marketer · SaaS Advisor</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Stop writing the same thing six times.</h2>
+  <p>14-day free trial. No credit card required. Cancel any time.</p>
+  <button class="btn-large">Start Repurposing Free →</button>
+  <div class="cta-note">Already used by 8,400+ creators · SOC 2 Type II compliant</div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-mark">Q</div>
+      <div><div class="nav-brand">Repurpose</div><div style="font-size:11px;color:var(--text-muted);">by Quorbz</div></div>
+    </div>
+    <div class="footer-text">© 2026 Quorbz LLC · <a href="#" style="color:var(--text-muted);">Privacy</a> · <a href="#" style="color:var(--text-muted);">Terms</a></div>
+  </div>
+</footer>
+
+<div class="review-note">⚡ Design Mockup · V2 SaaS</div>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quorbz Platform — The infrastructure layer for AI-native products</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #10b981;
+    --accent-light: #34d399;
+    --accent-dark: #059669;
+    --accent2: #06b6d4;
+    --bg: #060a14;
+    --surface: #0b1120;
+    --elevated: #0f1a2e;
+    --border: rgba(255,255,255,0.06);
+    --border-accent: rgba(16,185,129,0.25);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --code-bg: #040810;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); }
+  a { text-decoration: none; color: inherit; }
+  code, pre, .mono { font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,10,20,0.9); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; box-shadow: 0 0 16px rgba(16,185,129,0.4); }
+  .nav-brand { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+  .nav-sub { font-size: 11px; color: var(--text-muted); }
+  .nav-links { display: flex; gap: 2px; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .btn-ghost { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; }
+  .btn-primary { font-size: 13px; font-weight: 600; color: #fff; padding: 7px 16px; border-radius: 8px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(16,185,129,0.4); box-shadow: 0 0 20px rgba(16,185,129,0.3); cursor: pointer; white-space: nowrap; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 48px 80px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 64px; align-items: start;
+    max-width: 1280px; margin: 0 auto;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; right: -40px; width: 700px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-light); background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(32px, 3.8vw, 52px); font-weight: 900; line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 20px; }
+  .hero h1 em { font-style: normal; background: linear-gradient(135deg, #34d399, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { font-size: 17px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 32px; max-width: 480px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+  .btn-large { font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; box-shadow: 0 0 28px rgba(16,185,129,0.35); }
+  .btn-large-ghost { font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px; color: var(--text-secondary); border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; }
+
+  /* METRICS ROW */
+  .hero-metrics { display: flex; gap: 32px; flex-wrap: wrap; }
+  .metric { }
+  .metric-value { font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
+  .metric-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(16,185,129,0.1);
+  }
+  .code-header {
+    background: rgba(16,185,129,0.05);
+    border-bottom: 1px solid rgba(16,185,129,0.1);
+    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .code-dots { display: flex; gap: 5px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .code-filename { font-size: 12px; color: var(--text-muted); font-family: 'SF Mono', monospace; margin-left: 6px; }
+  .code-copy { margin-left: auto; font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 3px 10px; border-radius: 5px; cursor: pointer; }
+  pre {
+    padding: 24px; font-size: 13px; line-height: 1.7; overflow-x: auto;
+  }
+  .kw { color: #a78bfa; }
+  .fn { color: #34d399; }
+  .str { color: #fcd34d; }
+  .cm { color: #475569; font-style: italic; }
+  .val { color: #60a5fa; }
+  .punct { color: #64748b; }
+  .obj { color: #f1f5f9; }
+  .prop { color: #94a3b8; }
+  .tab-labels {
+    display: flex; gap: 2px; padding: 8px 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.01);
+  }
+  .tab-label { font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px 6px 0 0; cursor: pointer; color: var(--text-muted); }
+  .tab-label.active { color: var(--accent-light); background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15); border-bottom: none; }
+
+  /* METRICS BAR */
+  .metrics-bar {
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; justify-content: center; gap: 80px; flex-wrap: wrap;
+  }
+  .metric-big { text-align: center; }
+  .metric-big-value { font-size: 40px; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--accent-light), #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .metric-big-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  /* SECTION */
+  .section { max-width: 1280px; margin: 0 auto; padding: 80px 48px; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 12px; }
+  .section-title { font-size: clamp(28px, 3vw, 44px); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .section-sub { font-size: 16px; color: var(--text-secondary); margin-bottom: 48px; max-width: 560px; }
+
+  /* CAPABILITIES */
+  .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .cap-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 24px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .cap-card:hover { border-color: rgba(16,185,129,0.3); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+  .cap-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+  .cap-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .cap-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 12px; }
+  .cap-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cap-tag { font-size: 10px; color: var(--text-muted); background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.12); padding: 2px 7px; border-radius: 3px; font-family: 'SF Mono', monospace; }
+
+  /* API DEMO */
+  .api-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .api-demo-intro h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .api-demo-intro p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
+  .api-endpoint {
+    background: var(--code-bg); border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .method { font-size: 11px; font-weight: 700; font-family: monospace; padding: 3px 8px; border-radius: 4px; flex-shrink: 0; }
+  .method.get { background: rgba(16,185,129,0.15); color: #34d399; }
+  .method.post { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .method.del { background: rgba(239,68,68,0.15); color: #f87171; }
+  .endpoint-path { font-size: 13px; font-family: monospace; color: var(--text-secondary); }
+  .endpoint-desc { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+
+  /* PRICING */
+  .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .price-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 22px;
+    transition: border-color 0.2s;
+  }
+  .price-card.featured { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05); box-shadow: 0 0 0 1px rgba(16,185,129,0.12); position: relative; }
+  .featured-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; padding: 3px 12px; border-radius: 20px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; white-space: nowrap; }
+  .price-tier { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-light); margin-bottom: 8px; }
+  .price-amount { font-size: 36px; font-weight: 900; letter-spacing: -0.04em; color: var(--text-primary); margin-bottom: 4px; }
+  .price-amount span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
+  .price-requests { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .price-features { list-style: none; margin-bottom: 20px; }
+  .price-features li { font-size: 12px; color: var(--text-secondary); padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: flex-start; gap: 7px; }
+  .price-features li::before { content: '✓'; color: var(--accent-light); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .price-cta { width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid rgba(16,185,129,0.25); background: rgba(16,185,129,0.08); color: var(--accent-light); }
+  .price-cta.featured-btn { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 16px rgba(16,185,129,0.25); }
+  .price-cta.enterprise { color: var(--text-muted); background: transparent; }
+
+  /* INTEGRATIONS */
+  .integrations-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .integration-chip { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); transition: border-color 0.2s; }
+  .integration-chip:hover { border-color: rgba(16,185,129,0.3); color: var(--text-primary); }
+  .integration-chip-icon { font-size: 18px; }
+
+  /* CTA */
+  .cta-section { background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(6,182,212,0.04)); border-top: 1px solid rgba(16,185,129,0.12); border-bottom: 1px solid rgba(16,185,129,0.12); padding: 80px 48px; text-align: center; }
+  .cta-section h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+  .cta-section p { font-size: 16px; color: var(--text-secondary); margin-bottom: 32px; }
+  .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .cta-note { font-size: 12px; color: var(--text-muted); margin-top: 14px; }
+
+  /* FOOTER */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; max-width: 1280px; margin: 0 auto 40px; }
+  .footer-col h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+  .footer-col a { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+  .footer-col a:hover { color: var(--accent-light); }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .footer-bottom-text { font-size: 12px; color: var(--text-muted); }
+
+  .review-note { position: fixed; bottom: 16px; right: 16px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); border-radius: 10px; padding: 8px 14px; font-size: 11px; color: var(--accent-light); backdrop-filter: blur(12px); z-index: 999; }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 60px 20px; }
+    .section { padding: 60px 20px; }
+    .cap-grid, .api-demo, .pricing-grid { grid-template-columns: 1fr; }
+    .metrics-bar { gap: 40px; padding: 32px 20px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">⬡</div>
+    <div>
+      <div class="nav-brand">Quorbz Platform</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#">Docs</a>
+    <a href="#">API Reference</a>
+    <a href="#">Pricing</a>
+    <a href="#">Examples</a>
+    <a href="#">Changelog</a>
+    <a href="#">Blog</a>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Get API Key →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-label">⬡ PaaS · Production-ready</div>
+    <h1>The infrastructure layer for<br><em>AI-native products.</em></h1>
+    <p class="hero-sub">Agent orchestration, multi-model routing, persistent memory, and white-label tooling — as a platform. Built by the team that runs 24 AI agents in production, every day.</p>
+    <div class="hero-actions">
+      <button class="btn-large">Read the Docs</button>
+      <button class="btn-large-ghost">Get API Key</button>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric"><div class="metric-value">99.99%</div><div class="metric-label">Uptime SLA</div></div>
+      <div class="metric"><div class="metric-value">&lt;50ms</div><div class="metric-label">Median Latency</div></div>
+      <div class="metric"><div class="metric-value">180+</div><div class="metric-label">Countries</div></div>
+      <div class="metric"><div class="metric-value">6 LLMs</div><div class="metric-label">Routed natively</div></div>
+    </div>
+  </div>
+
+  <!-- CODE BLOCK -->
+  <div class="code-block">
+    <div class="tab-labels">
+      <span class="tab-label active">Node.js</span>
+      <span class="tab-label">Python</span>
+      <span class="tab-label">cURL</span>
+    </div>
+    <div class="code-header">
+      <div class="code-dots">
+        <div class="code-dot" style="background:#ef4444;"></div>
+        <div class="code-dot" style="background:#f59e0b;"></div>
+        <div class="code-dot" style="background:#10b981;"></div>
+      </div>
+      <span class="code-filename">repurpose-agent.ts</span>
+      <span class="code-copy">copy</span>
+    </div>
+<pre><span class="kw">import</span> <span class="punct">{ </span><span class="obj">Quorbz</span><span class="punct"> }</span> <span class="kw">from</span> <span class="str">'@quorbz/sdk'</span>
+
+<span class="cm">// Initialize with your API key</span>
+<span class="kw">const</span> <span class="val">client</span> <span class="punct">=</span> <span class="kw">new</span> <span class="fn">Quorbz</span><span class="punct">({</span>
+  <span class="prop">apiKey</span><span class="punct">:</span> <span class="str">process.env.QUORBZ_API_KEY</span><span class="punct">,</span>
+<span class="punct">})</span>
+
+<span class="cm">// Spawn a persistent agent</span>
+<span class="kw">const</span> <span class="val">agent</span> <span class="punct">=</span> <span class="kw">await</span> <span class="val">client</span><span class="punct">.</span><span class="fn">agents</span><span class="punct">.</span><span class="fn">create</span><span class="punct">({</span>
+  <span class="prop">role</span><span class="punct">:</span>    <span class="str">'content-creator'</span><span class="punct">,</span>
+  <span class="prop">model</span><span class="punct">:</span>   <span class="str">'auto'</span><span class="punct">,</span>          <span class="cm">// routes to best model</span>
+  <span class="prop">memory</span><span class="punct">:</span> <span class="str">'persistent'</span><span class="punct">,</span>   <span class="cm">// survives restarts</span>
+<span class="punct">})</span>
+
+<span class="cm">// Repurpose a YouTube video to 30+ formats</span>
+<span class="kw">const</span> <span class="val">outputs</span> <span class="punct">=</span> <span class="kw">await</span> <span class="val">agent</span><span class="punct">.</span><span class="fn">repurpose</span><span class="punct">({</span>
+  <span class="prop">input</span><span class="punct">:</span>    <span class="str">'https://youtube.com/watch?v=...'</span><span class="punct">,</span>
+  <span class="prop">targets</span><span class="punct">:</span> <span class="punct">[</span><span class="str">'instagram'</span><span class="punct">,</span> <span class="str">'twitter'</span><span class="punct">,</span> <span class="str">'linkedin'</span><span class="punct">]</span><span class="punct">,</span>
+  <span class="prop">voice</span><span class="punct">:</span>   <span class="val">agent</span><span class="punct">.</span><span class="val">voiceProfile</span><span class="punct">,</span>
+<span class="punct">})</span>
+
+<span class="cm">// outputs.instagram — caption + hashtags</span>
+<span class="cm">// outputs.twitter   — 8-tweet thread</span>
+<span class="cm">// outputs.linkedin  — formatted post</span>
+<span class="fn">console</span><span class="punct">.</span><span class="fn">log</span><span class="punct">(</span><span class="val">outputs</span><span class="punct">.</span><span class="val">instagram</span><span class="punct">.</span><span class="val">caption</span><span class="punct">)</span></pre>
+  </div>
+</div>
+
+<!-- METRICS BAR -->
+<div class="metrics-bar">
+  <div class="metric-big"><div class="metric-big-value">99.99%</div><div class="metric-big-label">Uptime — Last 12 Months</div></div>
+  <div class="metric-big"><div class="metric-big-value">48ms</div><div class="metric-big-label">Median Response Time</div></div>
+  <div class="metric-big"><div class="metric-big-value">12M+</div><div class="metric-big-label">API Calls / Month</div></div>
+  <div class="metric-big"><div class="metric-big-value">SOC 2</div><div class="metric-big-label">Type II Compliant</div></div>
+</div>
+
+<!-- CAPABILITIES -->
+<div class="section">
+  <div class="section-label">Platform Capabilities</div>
+  <div class="section-title">Everything your AI product needs. Nothing it doesn't.</div>
+  <div class="section-sub">Six core capabilities, each production-tested on our own fleet of 24 agents running 24/7.</div>
+  <div class="cap-grid">
+    <div class="cap-card">
+      <div class="cap-icon">⬡</div>
+      <div class="cap-title">Agent Orchestration API</div>
+      <div class="cap-desc">Spawn, instruct, coordinate, and monitor AI agents programmatically. Persistent state. Graceful failures. Built-in supervisor patterns.</div>
+      <div class="cap-tags"><span class="cap-tag">spawn()</span><span class="cap-tag">instruct()</span><span class="cap-tag">observe()</span><span class="cap-tag">coordinate()</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🔀</div>
+      <div class="cap-title">Multi-Model Routing</div>
+      <div class="cap-desc">Route to the best model for each task automatically — Claude for reasoning, Grok for speed, specialized models for images and code. Cost-optimized by default.</div>
+      <div class="cap-tags"><span class="cap-tag">claude-*</span><span class="cap-tag">grok-*</span><span class="cap-tag">auto-route</span><span class="cap-tag">cost-aware</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🧠</div>
+      <div class="cap-title">Persistent Memory Layer</div>
+      <div class="cap-desc">Agents that remember. Structured memory with semantic search, timeline awareness, and automatic compression. Never lose context across sessions or restarts.</div>
+      <div class="cap-tags"><span class="cap-tag">episodic</span><span class="cap-tag">semantic</span><span class="cap-tag">compressed</span><span class="cap-tag">searchable</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">⚙</div>
+      <div class="cap-title">Pipeline Builder</div>
+      <div class="cap-desc">Chain multi-step AI workflows with branching, retries, and human-in-the-loop checkpoints. Define pipelines in code or the visual editor. Trigger via webhook, cron, or API.</div>
+      <div class="cap-tags"><span class="cap-tag">chain()</span><span class="cap-tag">branch()</span><span class="cap-tag">checkpoint()</span><span class="cap-tag">cron</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">📦</div>
+      <div class="cap-title">White-Label SDK</div>
+      <div class="cap-desc">Deploy Quorbz Platform under your own brand. Custom domains, your logo, your pricing. The full platform — minus the Quorbz name. For agencies and enterprise builders.</div>
+      <div class="cap-tags"><span class="cap-tag">custom domain</span><span class="cap-tag">your branding</span><span class="cap-tag">resell-ready</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">📡</div>
+      <div class="cap-title">Webhooks & Real-Time Events</div>
+      <div class="cap-desc">Every agent action, task completion, and error emits a structured event. Subscribe via webhook or WebSocket. Build reactive UIs without polling.</div>
+      <div class="cap-tags"><span class="cap-tag">webhooks</span><span class="cap-tag">websocket</span><span class="cap-tag">SSE</span><span class="cap-tag">retry</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- API DEMO -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">API Reference Preview</div>
+  <div class="api-demo">
+    <div class="api-demo-intro">
+      <h3>Designed for how developers actually work.</h3>
+      <p>Every endpoint follows REST conventions, returns clean JSON, and includes SDK helpers for Node, Python, Go, and Ruby. The docs have runnable examples, not lorem ipsum.</p>
+      <p style="margin-top:12px;">Authentication is a single Bearer token. Rate limits are per-tier, not per-endpoint. Errors include a human-readable message and a docs link.</p>
+    </div>
+    <div>
+      <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/v1/agents</span><span class="endpoint-desc">Spawn agent</span></div>
+      <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/v1/agents/{id}/instruct</span><span class="endpoint-desc">Send instruction</span></div>
+      <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/v1/agents/{id}/status</span><span class="endpoint-desc">Get agent state</span></div>
+      <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/v1/agents/{id}/memory</span><span class="endpoint-desc">Retrieve memory</span></div>
+      <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/v1/pipelines</span><span class="endpoint-desc">Create pipeline</span></div>
+      <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/v1/pipelines/{id}/run</span><span class="endpoint-desc">Trigger run</span></div>
+      <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/v1/models</span><span class="endpoint-desc">List available models</span></div>
+      <div class="api-endpoint"><span class="method del">DEL</span><span class="endpoint-path">/v1/agents/{id}</span><span class="endpoint-desc">Terminate agent</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">Usage-based. No surprises.</div>
+  <div class="section-sub">Start free. Scale to hundreds of millions of requests. Enterprise pricing negotiated directly.</div>
+  <div class="pricing-grid">
+
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-amount">Free</div>
+      <div class="price-requests">10,000 API calls / mo</div>
+      <ul class="price-features">
+        <li>All core endpoints</li>
+        <li>5 concurrent agents</li>
+        <li>7-day memory retention</li>
+        <li>Community support</li>
+        <li>Shared infrastructure</li>
+      </ul>
+      <button class="price-cta">Get API Key</button>
+    </div>
+
+    <div class="price-card featured">
+      <div class="featured-badge">Most Popular</div>
+      <div class="price-tier">Growth</div>
+      <div class="price-amount">$49<span>/mo</span></div>
+      <div class="price-requests">500,000 API calls / mo</div>
+      <ul class="price-features">
+        <li>All core endpoints</li>
+        <li>50 concurrent agents</li>
+        <li>90-day memory retention</li>
+        <li>Multi-model routing</li>
+        <li>Webhooks + WebSocket</li>
+        <li>Email support (24h SLA)</li>
+      </ul>
+      <button class="price-cta featured-btn">Start Free Trial</button>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Scale</div>
+      <div class="price-amount">$299<span>/mo</span></div>
+      <div class="price-requests">Unlimited + 99.99% SLA</div>
+      <ul class="price-features">
+        <li>Unlimited API calls</li>
+        <li>Unlimited agents</li>
+        <li>Permanent memory</li>
+        <li>White-label option</li>
+        <li>Dedicated infrastructure</li>
+        <li>Priority support (4h SLA)</li>
+        <li>Custom model routing</li>
+      </ul>
+      <button class="price-cta">Get Started</button>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Enterprise</div>
+      <div class="price-amount" style="font-size:28px;">Custom</div>
+      <div class="price-requests">Tailored to your scale</div>
+      <ul class="price-features">
+        <li>Everything in Scale</li>
+        <li>On-premise deployment</li>
+        <li>Custom model fine-tuning</li>
+        <li>SSO / SAML</li>
+        <li>Audit logs + compliance</li>
+        <li>Dedicated CSM</li>
+        <li>SLAs up to 99.999%</li>
+        <li>Volume discounts</li>
+      </ul>
+      <button class="price-cta enterprise">Contact Sales</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- INTEGRATIONS -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Integrations</div>
+  <div class="section-title">Works where you already work.</div>
+  <div class="section-sub" style="margin-bottom:24px;">Native SDKs and connectors for the tools developers already use.</div>
+  <div class="integrations-row">
+    <div class="integration-chip"><span class="integration-chip-icon">⬢</span> Node.js / TypeScript</div>
+    <div class="integration-chip"><span class="integration-chip-icon">🐍</span> Python</div>
+    <div class="integration-chip"><span class="integration-chip-icon">🔷</span> Go</div>
+    <div class="integration-chip"><span class="integration-chip-icon">💎</span> Ruby</div>
+    <div class="integration-chip"><span class="integration-chip-icon">⚡</span> Zapier</div>
+    <div class="integration-chip"><span class="integration-chip-icon">🔗</span> Make (Integromat)</div>
+    <div class="integration-chip"><span class="integration-chip-icon">▲</span> Vercel</div>
+    <div class="integration-chip"><span class="integration-chip-icon">🐳</span> Docker</div>
+    <div class="integration-chip"><span class="integration-chip-icon">☁</span> AWS / GCP / Azure</div>
+    <div class="integration-chip"><span class="integration-chip-icon">🗄</span> PostgreSQL</div>
+    <div class="integration-chip"><span class="integration-chip-icon">🟥</span> Redis</div>
+    <div class="integration-chip"><span class="integration-chip-icon">📊</span> Grafana</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Build something that shouldn't be possible.</h2>
+  <p>Free tier. No credit card. Your first 10,000 API calls are on us.</p>
+  <div class="cta-btns">
+    <button class="btn-large">Get API Key</button>
+    <button class="btn-large-ghost">Read the Docs</button>
+  </div>
+  <div class="cta-note">Free tier · No card required · Production-ready from day one</div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div class="nav-logo-mark">⬡</div>
+        <div><div class="nav-brand">Quorbz Platform</div><div style="font-size:11px;color:var(--text-muted);">by Quorbz</div></div>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.6;max-width:280px;">The infrastructure layer for AI-native products. Built by the team that runs 24 agents in production every day.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#">Documentation</a>
+      <a href="#">API Reference</a>
+      <a href="#">Changelog</a>
+      <a href="#">Status</a>
+    </div>
+    <div class="footer-col">
+      <h4>Developers</h4>
+      <a href="#">Quick Start</a>
+      <a href="#">SDKs</a>
+      <a href="#">Examples</a>
+      <a href="#">Community</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Security</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-text">© 2026 Quorbz LLC. All rights reserved.</div>
+    <div class="footer-bottom-text" style="display:flex;gap:16px;">
+      <a href="#" style="color:var(--text-muted);">Privacy</a>
+      <a href="#" style="color:var(--text-muted);">Terms</a>
+      <a href="#" style="color:var(--text-muted);">Security</a>
+      <a href="#" style="color:var(--text-muted);">SOC 2</a>
+    </div>
+  </div>
+</footer>
+
+<div class="review-note">⬡ Design Mockup · V4 PaaS</div>
+</body>
+</html>

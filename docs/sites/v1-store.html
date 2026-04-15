@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quorbz Store — Premium Digital Downloads</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --accent-dark: #1d4ed8;
+    --bg: #060a14;
+    --surface: #0b1120;
+    --elevated: #111827;
+    --border: rgba(255,255,255,0.06);
+    --border-accent: rgba(59,130,246,0.3);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,10,20,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+    box-shadow: 0 0 16px rgba(59,130,246,0.35);
+  }
+  .nav-brand { font-weight: 700; font-size: 16px; }
+  .nav-sub { font-size: 11px; color: var(--text-muted); }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    padding: 6px 12px; border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+  .nav-cta {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-ghost {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    padding: 7px 14px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+  }
+  .btn-primary {
+    font-size: 13px; font-weight: 600; color: #fff;
+    padding: 7px 16px; border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border: 1px solid rgba(59,130,246,0.4);
+    box-shadow: 0 0 20px rgba(59,130,246,0.3);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary:hover { box-shadow: 0 0 28px rgba(59,130,246,0.5); }
+
+  /* HERO */
+  .hero {
+    padding: 100px 48px 80px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 64px; align-items: center;
+    max-width: 1280px; margin: 0 auto;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-light);
+    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 20px;
+  }
+  .hero-label::before { content: '✦'; font-size: 9px; }
+  .hero h1 {
+    font-size: clamp(36px, 4vw, 56px); font-weight: 800; line-height: 1.08;
+    letter-spacing: -0.03em; margin-bottom: 20px;
+  }
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--accent-light), #c4b5fd);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: 17px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 32px;
+    max-width: 440px;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .btn-large {
+    font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff; border: 1px solid rgba(59,130,246,0.4);
+    box-shadow: 0 0 30px rgba(59,130,246,0.35);
+    cursor: pointer;
+  }
+  .btn-large-ghost {
+    font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px;
+    color: var(--text-secondary); border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+  }
+  .hero-stats {
+    display: flex; gap: 24px; margin-top: 40px; padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .hero-stat { }
+  .hero-stat-value { font-size: 22px; font-weight: 800; color: var(--text-primary); }
+  .hero-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Hero right — floating product cards */
+  .hero-visual {
+    position: relative; height: 420px;
+  }
+  .product-float {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .pf-1 { width: 180px; top: 20px; left: 40px; transform: rotate(-4deg); }
+  .pf-2 { width: 200px; top: 60px; right: 20px; transform: rotate(3deg); box-shadow: 0 30px 80px rgba(59,130,246,0.2); }
+  .pf-3 { width: 160px; bottom: 40px; left: 80px; transform: rotate(2deg); }
+  .pf-4 { width: 170px; bottom: 60px; right: 60px; transform: rotate(-3deg); }
+  .product-thumb {
+    height: 100px; display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .product-thumb-1 { background: linear-gradient(135deg, #1e3a5f, #1d4ed8); }
+  .product-thumb-2 { background: linear-gradient(135deg, #1a0533, #7c3aed); }
+  .product-thumb-3 { background: linear-gradient(135deg, #052e16, #065f46); }
+  .product-thumb-4 { background: linear-gradient(135deg, #1c1209, #92400e); }
+  .product-info { padding: 10px 12px; }
+  .product-name-sm { font-size: 11px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .product-meta-sm { display: flex; align-items: center; justify-content: space-between; }
+  .product-price-sm { font-size: 13px; font-weight: 700; color: var(--accent-light); }
+  .product-stars-sm { font-size: 10px; color: #fbbf24; }
+
+  /* BANNER */
+  .banner {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
+    border-top: 1px solid rgba(59,130,246,0.15);
+    border-bottom: 1px solid rgba(59,130,246,0.15);
+    padding: 12px 48px;
+    display: flex; align-items: center; justify-content: center; gap: 48px;
+    flex-wrap: wrap;
+  }
+  .banner-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .banner-icon { font-size: 16px; }
+
+  /* SECTION */
+  .section { max-width: 1280px; margin: 0 auto; padding: 80px 48px; }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent-light); margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(28px, 3vw, 40px); font-weight: 800; letter-spacing: -0.025em;
+    color: var(--text-primary); margin-bottom: 12px; line-height: 1.15;
+  }
+  .section-sub {
+    font-size: 16px; color: var(--text-secondary); margin-bottom: 48px; max-width: 560px;
+  }
+
+  /* CATEGORIES */
+  .cat-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+  }
+  .cat-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 12px;
+    text-align: center; cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .cat-card:hover {
+    border-color: rgba(59,130,246,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  .cat-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .cat-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .cat-count { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+  /* PRODUCT GRID */
+  .product-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .product-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59,130,246,0.3);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  }
+  .product-image {
+    height: 160px; display: flex; align-items: center; justify-content: center;
+    font-size: 48px; position: relative;
+  }
+  .product-badge {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+    background: rgba(59,130,246,0.85); color: #fff;
+  }
+  .product-badge.bestseller { background: rgba(245,158,11,0.85); }
+  .product-badge.new { background: rgba(16,185,129,0.85); }
+  .product-details { padding: 16px; }
+  .product-category { font-size: 10px; font-weight: 700; color: var(--accent-light); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+  .product-name { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.3; }
+  .product-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+  .product-price-original { font-size: 13px; color: var(--text-muted); text-decoration: line-through; margin-left: 6px; }
+  .product-rating { font-size: 11px; color: var(--text-muted); }
+  .product-rating .stars { color: #fbbf24; }
+  .btn-add {
+    font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 7px;
+    background: rgba(59,130,246,0.15); color: var(--accent-light);
+    border: 1px solid rgba(59,130,246,0.25);
+    cursor: pointer;
+  }
+
+  /* FREE CTA */
+  .free-cta {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 20px; padding: 56px 64px;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 48px; align-items: center;
+  }
+  .free-cta h3 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .free-cta p { font-size: 15px; color: var(--text-secondary); }
+  .email-form { display: flex; gap: 10px; }
+  .email-input {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; font-size: 14px; color: var(--text-primary);
+    width: 280px; outline: none;
+  }
+  .email-input::placeholder { color: var(--text-muted); }
+  .email-input:focus { border-color: rgba(59,130,246,0.4); }
+
+  /* WHY DIGITAL */
+  .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .why-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 24px;
+  }
+  .why-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+  }
+  .why-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .why-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* REVIEW BAR */
+  .review-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: center; gap: 64px;
+    flex-wrap: wrap;
+  }
+  .review-item { text-align: center; }
+  .review-value { font-size: 32px; font-weight: 800; color: var(--text-primary); }
+  .review-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 48px;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; max-width: 1280px; margin: 0 auto 40px; }
+  .footer-brand p { font-size: 13px; color: var(--text-muted); margin-top: 12px; line-height: 1.6; max-width: 280px; }
+  .footer-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+  .footer-col a:hover { color: var(--accent-light); }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .footer-bottom-text { font-size: 12px; color: var(--text-muted); }
+
+  /* REVIEW MOCKUP NOTE */
+  .review-note {
+    position: fixed; bottom: 16px; right: 16px;
+    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 10px; padding: 8px 14px;
+    font-size: 11px; color: var(--accent-light);
+    backdrop-filter: blur(12px);
+    z-index: 999;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 60px 20px 40px; gap: 40px; }
+    .hero-visual { height: 280px; }
+    .section { padding: 60px 20px; }
+    .cat-grid { grid-template-columns: repeat(3, 1fr); }
+    .product-grid { grid-template-columns: 1fr; }
+    .free-cta { grid-template-columns: 1fr; padding: 40px 28px; }
+    .why-grid { grid-template-columns: 1fr; }
+    .review-bar { gap: 32px; padding: 32px 20px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">Q</div>
+    <div>
+      <div class="nav-brand">Quorbz</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#">Products</a>
+    <a href="#">Bundles</a>
+    <a href="#">Bestsellers</a>
+    <a href="#">Free Samples</a>
+    <a href="#">Blog</a>
+  </div>
+  <div class="nav-cta">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Browse All →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-label">AI-crafted · Instant download</div>
+    <h1>Digital products<br>worth <span class="gradient-text">showing off</span></h1>
+    <p class="hero-sub">Premium planners, wall art, social media kits, and template bundles — designed by AI to stand out. Download instantly. Use forever.</p>
+    <div class="hero-actions">
+      <button class="btn-large">Browse Products</button>
+      <button class="btn-large-ghost">Get 5 Free Templates</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">500+</div>
+        <div class="hero-stat-label">Products</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">18K+</div>
+        <div class="hero-stat-label">Downloads</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">4.9★</div>
+        <div class="hero-stat-label">Avg Rating</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">$0</div>
+        <div class="hero-stat-label">Subscription</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="product-float pf-1">
+      <div class="product-thumb product-thumb-1">📓</div>
+      <div class="product-info">
+        <div class="product-name-sm">2026 Digital Planner</div>
+        <div class="product-meta-sm">
+          <span class="product-price-sm">$12</span>
+          <span class="product-stars-sm">★★★★★</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-float pf-2">
+      <div class="product-thumb product-thumb-2">🖼</div>
+      <div class="product-info">
+        <div class="product-name-sm">Minimalist Wall Art × 20</div>
+        <div class="product-meta-sm">
+          <span class="product-price-sm">$18</span>
+          <span class="product-stars-sm">★★★★★</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-float pf-3">
+      <div class="product-thumb product-thumb-3">📱</div>
+      <div class="product-info">
+        <div class="product-name-sm">Instagram Story Kit</div>
+        <div class="product-meta-sm">
+          <span class="product-price-sm">$24</span>
+          <span class="product-stars-sm">★★★★★</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-float pf-4">
+      <div class="product-thumb product-thumb-4">📋</div>
+      <div class="product-info">
+        <div class="product-name-sm">Business Notion OS</div>
+        <div class="product-meta-sm">
+          <span class="product-price-sm">$29</span>
+          <span class="product-stars-sm">★★★★★</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-item"><span class="banner-icon">⚡</span> Instant download after purchase</div>
+  <div class="banner-item"><span class="banner-icon">♾</span> Use on unlimited projects</div>
+  <div class="banner-item"><span class="banner-icon">🔄</span> Free lifetime updates</div>
+  <div class="banner-item"><span class="banner-icon">💬</span> Commercial license included</div>
+  <div class="banner-item"><span class="banner-icon">✦</span> AI-crafted, human-curated</div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="section">
+  <div class="section-label">Browse by Category</div>
+  <div class="section-title">Everything you need to create.</div>
+  <div class="section-sub">Six categories, hundreds of products, one download away.</div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <span class="cat-icon">📓</span>
+      <div class="cat-name">Digital Planners</div>
+      <div class="cat-count">94 products</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">🖼</span>
+      <div class="cat-name">Wall Art & Prints</div>
+      <div class="cat-count">118 products</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">📱</span>
+      <div class="cat-name">Social Media Kits</div>
+      <div class="cat-count">76 products</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">📋</span>
+      <div class="cat-name">Notion Templates</div>
+      <div class="cat-count">52 products</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">🎨</span>
+      <div class="cat-name">Canva Bundles</div>
+      <div class="cat-count">88 products</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">💼</span>
+      <div class="cat-name">Business Templates</div>
+      <div class="cat-count">64 products</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Bestsellers</div>
+  <div class="section-title">What people can't stop buying.</div>
+  <div class="section-sub">Our most downloaded products, sorted by rating and repeat purchases.</div>
+  <div class="product-grid">
+
+    <div class="product-card">
+      <div class="product-image" style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8);">
+        📓
+        <span class="product-badge bestseller">Bestseller</span>
+      </div>
+      <div class="product-details">
+        <div class="product-category">Digital Planner</div>
+        <div class="product-name">2026 Ultimate Digital Planner — Premium</div>
+        <div class="product-desc">Daily, weekly, monthly, yearly. Hyperlinked. Works in GoodNotes, Notability, and Noteshelf.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">$12</span>
+            <span class="product-price-original">$24</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="product-rating"><span class="stars">★★★★★</span> 4.9 (312)</div>
+            <button class="btn-add" style="margin-top:6px;">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-image" style="background:linear-gradient(135deg,#1a0533,#7c3aed);">
+        🖼
+        <span class="product-badge bestseller">Bestseller</span>
+      </div>
+      <div class="product-details">
+        <div class="product-category">Wall Art</div>
+        <div class="product-name">Minimalist Wall Art Bundle — 20 Prints</div>
+        <div class="product-desc">20 high-resolution 4K prints. Botanical, abstract, and quote styles. Print-ready at any size.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">$18</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="product-rating"><span class="stars">★★★★★</span> 4.8 (241)</div>
+            <button class="btn-add" style="margin-top:6px;">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-image" style="background:linear-gradient(135deg,#1c1017,#db2777);">
+        📱
+        <span class="product-badge new">New</span>
+      </div>
+      <div class="product-details">
+        <div class="product-category">Social Media Kit</div>
+        <div class="product-name">Instagram Story Kit — 60 Templates</div>
+        <div class="product-desc">60 editable Canva templates. Stories, highlights, carousels, and feed posts. Three color schemes.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">$24</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="product-rating"><span class="stars">★★★★★</span> 5.0 (88)</div>
+            <button class="btn-add" style="margin-top:6px;">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-image" style="background:linear-gradient(135deg,#1c1209,#92400e);">
+        📋
+      </div>
+      <div class="product-details">
+        <div class="product-category">Notion Template</div>
+        <div class="product-name">Business Notion OS — Complete Suite</div>
+        <div class="product-desc">CRM, project tracker, finance log, content calendar, goal planner. The complete business workspace.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">$29</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="product-rating"><span class="stars">★★★★★</span> 4.9 (174)</div>
+            <button class="btn-add" style="margin-top:6px;">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-image" style="background:linear-gradient(135deg,#052e16,#065f46);">
+        📅
+      </div>
+      <div class="product-details">
+        <div class="product-category">Social Media Kit</div>
+        <div class="product-name">Social Content Calendar 2026</div>
+        <div class="product-desc">Full 12-month content plan. Daily prompts, hashtag banks, caption starters. Works for any niche.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">$14</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="product-rating"><span class="stars">★★★★★</span> 4.7 (203)</div>
+            <button class="btn-add" style="margin-top:6px;">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-image" style="background:linear-gradient(135deg,#172554,#1e40af);">
+        🎨
+        <span class="product-badge">Bundle</span>
+      </div>
+      <div class="product-details">
+        <div class="product-category">Canva Bundle</div>
+        <div class="product-name">Brand Identity Kit — Canva Pro</div>
+        <div class="product-desc">Logo variants, business card, letterhead, social profiles, brand guidelines template. Complete brand in minutes.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">$34</span>
+            <span class="product-price-original">$49</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="product-rating"><span class="stars">★★★★★</span> 4.9 (129)</div>
+            <button class="btn-add" style="margin-top:6px;">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REVIEW BAR -->
+<div class="review-bar">
+  <div class="review-item"><div class="review-value">18,400+</div><div class="review-label">Total Downloads</div></div>
+  <div class="review-item"><div class="review-value">4.9★</div><div class="review-label">Average Rating</div></div>
+  <div class="review-item"><div class="review-value">3,200+</div><div class="review-label">5-Star Reviews</div></div>
+  <div class="review-item"><div class="review-value">500+</div><div class="review-label">Products</div></div>
+  <div class="review-item"><div class="review-value">94%</div><div class="review-label">Repeat Buyers</div></div>
+</div>
+
+<!-- WHY DIGITAL -->
+<div class="section">
+  <div class="section-label">Why Quorbz</div>
+  <div class="section-title">Designed differently.</div>
+  <div class="section-sub">Every product is built by an AI team trained on what actually sells — then reviewed by humans before it ships.</div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">✦</div>
+      <div class="why-title">AI-crafted at scale</div>
+      <div class="why-desc">Our AI design team produces more in a day than a traditional studio produces in a month. More products, more variety, better quality than you'd expect at this price.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <div class="why-title">Instant. Forever.</div>
+      <div class="why-desc">Download the second you pay. No waiting, no shipping, no subscriptions. Every file is yours permanently, including all future updates we push.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📄</div>
+      <div class="why-title">Commercial license, always</div>
+      <div class="why-desc">Every product ships with a commercial use license. Use it for clients. Sell the finished work. Print it and sell prints. The license doesn't expire.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FREE CTA -->
+<div class="section" style="padding-top:0;">
+  <div class="free-cta">
+    <div>
+      <div class="hero-label" style="margin-bottom:16px;">Free. No credit card.</div>
+      <h3>Get 5 premium templates free.</h3>
+      <p>One planner, one wall art print, one social kit, one Canva template, and one Notion dashboard — yours immediately when you join the list.</p>
+    </div>
+    <div>
+      <div class="email-form">
+        <input type="email" class="email-input" placeholder="your@email.com">
+        <button class="btn-primary" style="font-size:14px;padding:12px 20px;white-space:nowrap;">Get Free Templates</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:10px;">No spam. Unsubscribe any time.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:12px;">
+        <div class="nav-logo-mark">Q</div>
+        <div class="nav-brand">Quorbz</div>
+      </div>
+      <p>Premium AI-crafted digital products. Designed to impress. Priced to be practical. Instantly delivered.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <a href="#">Digital Planners</a>
+      <a href="#">Wall Art</a>
+      <a href="#">Social Media Kits</a>
+      <a href="#">Notion Templates</a>
+      <a href="#">Canva Bundles</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Affiliate Program</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">License Terms</a>
+      <a href="#">Refund Policy</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-text">© 2026 Quorbz LLC. All rights reserved.</div>
+    <div class="footer-bottom-text" style="display:flex;gap:16px;">
+      <a href="#" style="color:var(--text-muted);">Privacy</a>
+      <a href="#" style="color:var(--text-muted);">Terms</a>
+      <a href="#" style="color:var(--text-muted);">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<div class="review-note">◈ Design Mockup · V1 Digital Products</div>
+<script>
+// Simulate hover depth for floating cards
+document.querySelectorAll('.product-float').forEach(card => {
+  card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+  card.addEventListener('mouseenter', () => {
+    const current = card.style.transform || '';
+    card.style.transform = current.replace(/rotate\([^)]+\)/, '') + ' translateY(-6px) scale(1.03)';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = card.dataset.baseTransform || '';
+  });
+});
+</script>
+</body>
+</html>

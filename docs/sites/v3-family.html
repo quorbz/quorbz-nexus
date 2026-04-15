@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quorbz Home — Your family's command center</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #06b6d4;
+    --accent-light: #22d3ee;
+    --accent-dark: #0891b2;
+    --bg: #060a14;
+    --surface: #0b1120;
+    --border: rgba(255,255,255,0.06);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,10,20,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #06b6d4, #0891b2); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; box-shadow: 0 0 16px rgba(6,182,212,0.4); }
+  .nav-brand { font-weight: 700; font-size: 16px; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .btn-ghost { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; }
+  .btn-primary { font-size: 13px; font-weight: 600; color: #fff; padding: 7px 16px; border-radius: 8px; background: linear-gradient(135deg, #06b6d4, #0891b2); border: 1px solid rgba(6,182,212,0.4); box-shadow: 0 0 20px rgba(6,182,212,0.3); cursor: pointer; white-space: nowrap; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 48px 80px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 64px; align-items: center;
+    max-width: 1280px; margin: 0 auto;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-light); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(36px, 4vw, 56px); font-weight: 900; line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 20px; }
+  .hero h1 em { font-style: normal; background: linear-gradient(135deg, #22d3ee, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { font-size: 17px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 32px; max-width: 440px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .btn-large { font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: #fff; border: none; cursor: pointer; box-shadow: 0 0 28px rgba(6,182,212,0.35); }
+  .btn-large-ghost { font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px; color: var(--text-secondary); border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; }
+  .hero-trust { display: flex; flex-direction: column; gap: 10px; }
+  .trust-point { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); }
+  .trust-icon { width: 28px; height: 28px; border-radius: 7px; background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.2); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+  /* DASHBOARD MOCKUP */
+  .dashboard-mockup {
+    background: var(--surface);
+    border: 1px solid rgba(6,182,212,0.2);
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(6,182,212,0.1);
+  }
+  .db-header { background: rgba(6,182,212,0.06); border-bottom: 1px solid rgba(6,182,212,0.12); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .db-title { font-size: 13px; font-weight: 700; color: var(--accent-light); }
+  .db-dots { display: flex; gap: 5px; }
+  .db-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px; }
+  .db-tile {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 14px;
+  }
+  .db-tile-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .db-tile-icon { font-size: 16px; }
+  .db-tile-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .db-event { background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.15); border-radius: 6px; padding: 6px 8px; margin-bottom: 5px; }
+  .db-event-name { font-size: 10px; font-weight: 600; color: var(--accent-light); }
+  .db-event-time { font-size: 9px; color: var(--text-muted); }
+  .db-location-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; }
+  .db-location-name { font-size: 11px; color: var(--text-secondary); }
+  .db-location-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px rgba(52,211,153,0.6); }
+  .db-location-status { font-size: 10px; color: #34d399; }
+  .db-password-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .db-password-site { font-size: 10px; color: var(--text-secondary); }
+  .db-password-strength { font-size: 9px; font-weight: 700; }
+  .db-shopping-item { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+  .db-check { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(6,182,212,0.4); }
+  .db-check.done { background: rgba(6,182,212,0.4); }
+  .db-item-name { font-size: 10px; color: var(--text-secondary); }
+
+  /* PRIVACY BANNER */
+  .privacy-banner {
+    background: linear-gradient(135deg, rgba(6,182,212,0.07), rgba(16,185,129,0.05));
+    border-top: 1px solid rgba(6,182,212,0.12); border-bottom: 1px solid rgba(6,182,212,0.12);
+    padding: 40px 48px;
+    display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center;
+    max-width: 1280px; margin: 0 auto;
+  }
+  .privacy-headline { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .privacy-sub { font-size: 14px; color: var(--text-secondary); }
+  .privacy-promises { display: flex; gap: 16px; flex-wrap: wrap; }
+  .promise-chip { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--accent-light); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); padding: 7px 14px; border-radius: 20px; }
+  .promise-chip::before { content: '✓'; font-weight: 800; }
+
+  /* SECTION */
+  .section { max-width: 1280px; margin: 0 auto; padding: 80px 48px; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 12px; }
+  .section-title { font-size: clamp(28px, 3vw, 44px); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .section-sub { font-size: 16px; color: var(--text-secondary); margin-bottom: 48px; max-width: 560px; }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px 24px; transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { border-color: rgba(6,182,212,0.3); transform: translateY(-3px); }
+  .feature-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+  .feature-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .feature-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+  .feature-detail { font-size: 11px; color: var(--text-muted); margin-top: 10px; }
+
+  /* COMPARISON */
+  .comparison-table { width: 100%; border-collapse: collapse; }
+  .comparison-table th { padding: 14px 20px; text-align: center; font-size: 13px; font-weight: 700; }
+  .comparison-table th:first-child { text-align: left; }
+  .comparison-table th.quorbz { color: var(--accent-light); }
+  .comparison-table td { padding: 14px 20px; text-align: center; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .comparison-table td:first-child { text-align: left; color: var(--text-secondary); font-weight: 500; }
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .check-yes { color: #34d399; font-weight: 700; }
+  .check-no { color: var(--text-muted); }
+  .check-partial { color: #fbbf24; }
+  .compare-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 14px 20px; background: rgba(255,255,255,0.03); border-radius: 12px 12px 0 0; border: 1px solid var(--border); border-bottom: none; }
+  .compare-header-cell { font-size: 13px; font-weight: 700; text-align: center; }
+  .compare-header-cell:first-child { text-align: left; color: var(--text-muted); }
+  .compare-header-cell.quorbz { color: var(--accent-light); }
+  .compare-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 14px 20px; border: 1px solid var(--border); border-top: none; }
+  .compare-row:last-child { border-radius: 0 0 12px 12px; }
+  .compare-row:nth-child(even) { background: rgba(255,255,255,0.01); }
+  .compare-cell { font-size: 13px; text-align: center; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+  .compare-cell:first-child { text-align: left; justify-content: flex-start; color: var(--text-secondary); font-weight: 500; }
+  .yes { color: #34d399; font-weight: 700; font-size: 16px; }
+  .no { color: #475569; font-size: 16px; }
+  .partial { color: #fbbf24; font-size: 13px; }
+
+  /* PRICING */
+  .pricing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 760px; margin: 0 auto; }
+  .price-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 20px; padding: 36px 32px; transition: border-color 0.2s; }
+  .price-card.featured { border-color: rgba(6,182,212,0.4); background: rgba(6,182,212,0.05); box-shadow: 0 0 0 1px rgba(6,182,212,0.12), 0 20px 60px rgba(0,0,0,0.3); }
+  .price-tier { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-light); margin-bottom: 8px; }
+  .price-amount { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; color: var(--text-primary); }
+  .price-amount span { font-size: 18px; font-weight: 400; color: var(--text-muted); }
+  .price-desc { font-size: 14px; color: var(--text-muted); margin: 8px 0 28px; }
+  .price-features { list-style: none; margin-bottom: 28px; }
+  .price-features li { font-size: 13px; color: var(--text-secondary); padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 8px; }
+  .price-features li::before { content: '✓'; color: var(--accent-light); font-weight: 700; }
+  .price-cta { width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid rgba(6,182,212,0.3); background: rgba(6,182,212,0.1); color: var(--accent-light); }
+  .price-cta.featured-btn { background: linear-gradient(135deg, #06b6d4, #0891b2); color: #fff; border-color: rgba(6,182,212,0.5); box-shadow: 0 0 20px rgba(6,182,212,0.3); }
+
+  /* CTA */
+  .cta-section { background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(16,185,129,0.04)); border-top: 1px solid rgba(6,182,212,0.12); border-bottom: 1px solid rgba(6,182,212,0.12); padding: 80px 48px; text-align: center; }
+  .cta-section h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+  .cta-section p { font-size: 16px; color: var(--text-secondary); margin-bottom: 32px; }
+  .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .cta-note { font-size: 12px; color: var(--text-muted); margin-top: 16px; }
+
+  /* FOOTER */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 40px 48px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-text { font-size: 12px; color: var(--text-muted); }
+
+  .review-note { position: fixed; bottom: 16px; right: 16px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 10px; padding: 8px 14px; font-size: 11px; color: var(--accent-light); backdrop-filter: blur(12px); z-index: 999; }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 60px 20px; }
+    .section { padding: 60px 20px; }
+    .features-grid, .pricing-row { grid-template-columns: 1fr; }
+    .privacy-banner { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">🏠</div>
+    <div class="nav-brand">Quorbz Home</div>
+  </div>
+  <div class="nav-links">
+    <a href="#">Features</a>
+    <a href="#">Privacy</a>
+    <a href="#">Pricing</a>
+    <a href="#">Download</a>
+    <a href="#">Blog</a>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Start Free Trial</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-label">🔒 Zero trust · Zero ads · Zero data selling</div>
+    <h1>Your family's<br>command center.<br><em>Your data stays yours.</em></h1>
+    <p class="hero-sub">Shared calendar, live location, smart shopping, password health, and smart home — all in one private dashboard. No subscription to Google. No surveillance from Amazon. Just your family.</p>
+    <div class="hero-actions">
+      <button class="btn-large">Start Free Trial</button>
+      <button class="btn-large-ghost">See Features</button>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-point"><div class="trust-icon">🔐</div> 256-bit end-to-end encrypted</div>
+      <div class="trust-point"><div class="trust-icon">🚫</div> No ads. No tracking. No data selling. Ever.</div>
+      <div class="trust-point"><div class="trust-icon">🏠</div> Your data lives on your network, not ours</div>
+      <div class="trust-point"><div class="trust-icon">✦</div> Zero trust architecture from day one</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="dashboard-mockup">
+    <div class="db-header">
+      <div class="db-title">🏠 Family Dashboard</div>
+      <div class="db-dots">
+        <div class="db-dot" style="background:#ef4444;"></div>
+        <div class="db-dot" style="background:#f59e0b;"></div>
+        <div class="db-dot" style="background:#10b981;"></div>
+      </div>
+    </div>
+    <div class="db-grid">
+      <!-- Calendar -->
+      <div class="db-tile">
+        <div class="db-tile-header"><span class="db-tile-icon">📅</span><span class="db-tile-label">Today</span></div>
+        <div class="db-event"><div class="db-event-name">Soccer Practice — Emma</div><div class="db-event-time">4:00 PM · Riverside Field</div></div>
+        <div class="db-event" style="background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.2);"><div class="db-event-name" style="color:#c4b5fd;">Dinner Reservation</div><div class="db-event-time">7:30 PM · Casa Blanca</div></div>
+      </div>
+      <!-- Location -->
+      <div class="db-tile">
+        <div class="db-tile-header"><span class="db-tile-icon">📍</span><span class="db-tile-label">Family</span></div>
+        <div class="db-location-row"><span class="db-location-name">Dad (Benjamin)</span><div style="display:flex;align-items:center;gap:4px;"><div class="db-location-dot"></div><span class="db-location-status">Home</span></div></div>
+        <div class="db-location-row"><span class="db-location-name">Mom (Sarah)</span><div style="display:flex;align-items:center;gap:4px;"><div class="db-location-dot" style="background:#60a5fa;box-shadow:0 0 6px rgba(96,165,250,0.6);"></div><span class="db-location-status" style="color:#60a5fa;">Whole Foods</span></div></div>
+        <div class="db-location-row"><span class="db-location-name">Emma</span><div style="display:flex;align-items:center;gap:4px;"><div class="db-location-dot" style="background:#fbbf24;box-shadow:0 0 6px rgba(251,191,36,0.6);"></div><span class="db-location-status" style="color:#fbbf24;">School</span></div></div>
+      </div>
+      <!-- Shopping -->
+      <div class="db-tile">
+        <div class="db-tile-header"><span class="db-tile-icon">🛒</span><span class="db-tile-label">Shopping</span></div>
+        <div class="db-shopping-item"><div class="db-check done"></div><span class="db-item-name" style="text-decoration:line-through;opacity:0.5;">Milk (2 gallons)</span></div>
+        <div class="db-shopping-item"><div class="db-check done"></div><span class="db-item-name" style="text-decoration:line-through;opacity:0.5;">Eggs</span></div>
+        <div class="db-shopping-item"><div class="db-check"></div><span class="db-item-name">Bread</span></div>
+        <div class="db-shopping-item"><div class="db-check"></div><span class="db-item-name">Chicken — dinner</span></div>
+        <div class="db-shopping-item"><div class="db-check"></div><span class="db-item-name">Emma's soccer snacks</span></div>
+      </div>
+      <!-- Passwords -->
+      <div class="db-tile">
+        <div class="db-tile-header"><span class="db-tile-icon">🔐</span><span class="db-tile-label">Vault</span></div>
+        <div class="db-password-row"><span class="db-password-site">Netflix</span><span class="db-password-strength" style="color:#34d399;">Strong</span></div>
+        <div class="db-password-row"><span class="db-password-site">Amazon</span><span class="db-password-strength" style="color:#fbbf24;">Reused</span></div>
+        <div class="db-password-row"><span class="db-password-site">Bank of America</span><span class="db-password-strength" style="color:#34d399;">Strong</span></div>
+        <div style="margin-top:6px;font-size:10px;color:var(--text-muted);">1 reused password · no breaches</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY BANNER -->
+<div style="border-top:1px solid rgba(6,182,212,0.1);border-bottom:1px solid rgba(6,182,212,0.1);background:linear-gradient(135deg,rgba(6,182,212,0.05),rgba(16,185,129,0.04));">
+  <div class="privacy-banner">
+    <div>
+      <div class="privacy-headline">The Quorbz Promise.</div>
+      <div class="privacy-sub">Built for families who've noticed that free usually means you're the product.</div>
+    </div>
+    <div class="privacy-promises">
+      <div class="promise-chip">No ads. Ever.</div>
+      <div class="promise-chip">No data selling.</div>
+      <div class="promise-chip">No tracking pixels.</div>
+      <div class="promise-chip">End-to-end encrypted.</div>
+      <div class="promise-chip">Your network. Your data.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+  <div class="section-label">Features</div>
+  <div class="section-title">Everything your family needs. One login.</div>
+  <div class="section-sub">Six tools that used to live in six different apps — and none of them respected your privacy.</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <div class="feature-title">Family Calendar</div>
+      <div class="feature-desc">One shared view for everyone. Color-coded by person. Two-way sync with your existing calendars — then you can keep Google Calendar or ditch it entirely.</div>
+      <div class="feature-detail">Reminders · RSVP tracking · Recurring events · Shared notes</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📍</div>
+      <div class="feature-title">Live Location</div>
+      <div class="feature-desc">Real-time family location that runs on your private network — not Life360's servers. Know where your kids are. No outside company is selling that data to insurance companies.</div>
+      <div class="feature-detail">Real-time · Arrival alerts · Custom zones · Location history (private)</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛒</div>
+      <div class="feature-title">Smart Shopping List</div>
+      <div class="feature-desc">Shared list that syncs instantly. Add from any device. Voice-add from your phone. The AI learns what you buy regularly and prompts you before you run out.</div>
+      <div class="feature-detail">AI suggestions · Store sorting · Recipe import · Category grouping</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <div class="feature-title">Family Password Vault</div>
+      <div class="feature-desc">Shared and personal vaults. One master key per person. Automatic breach detection. Strong password generation. Everything 1Password does, at a fraction of the cost.</div>
+      <div class="feature-detail">Breach alerts · Strong generation · Secure sharing · 2FA codes</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏠</div>
+      <div class="feature-title">Smart Home Control</div>
+      <div class="feature-desc">Control your lights, locks, cameras, and thermostat without Amazon or Google in the middle. Works with all major smart home protocols. Your automations stay private.</div>
+      <div class="feature-detail">Matter/HomeKit/Zigbee · Custom routines · Room grouping · Guest access</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <div class="feature-title">Family Budget Tracker</div>
+      <div class="feature-desc">Connect your accounts. See where the money goes. Set category budgets. Kids get a pocket money tracker with weekly summaries. No bank-grade surveillance — your data, private.</div>
+      <div class="feature-detail">Account sync · Category budgets · Spending trends · Kids tracker</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARISON -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">The Honest Comparison</div>
+  <div class="section-title">What the free alternatives actually cost.</div>
+  <div class="section-sub">Every "free" family tool you use today is monetized through your data. Here's how Quorbz Home compares.</div>
+
+  <div class="compare-header">
+    <div class="compare-header-cell">Feature</div>
+    <div class="compare-header-cell quorbz">Quorbz Home</div>
+    <div class="compare-header-cell">Google Family</div>
+    <div class="compare-header-cell">Amazon + Life360</div>
+  </div>
+  <div class="compare-row"><div class="compare-cell">No ads or tracking</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="no">✕</span></div><div class="compare-cell"><span class="no">✕</span></div></div>
+  <div class="compare-row"><div class="compare-cell">Data not sold to third parties</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="no">✕</span></div><div class="compare-cell"><span class="no">✕</span></div></div>
+  <div class="compare-row"><div class="compare-cell">End-to-end encrypted location</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="no">✕</span></div><div class="compare-cell"><span class="no">✕</span></div></div>
+  <div class="compare-row"><div class="compare-cell">Password vault included</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="partial">Limited</span></div><div class="compare-cell"><span class="no">✕</span></div></div>
+  <div class="compare-row"><div class="compare-cell">Smart home (no Big Tech lock-in)</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="partial">Google only</span></div><div class="compare-cell"><span class="partial">Amazon only</span></div></div>
+  <div class="compare-row"><div class="compare-cell">Family budget tracker</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="no">✕</span></div><div class="compare-cell"><span class="no">✕</span></div></div>
+  <div class="compare-row"><div class="compare-cell">Everything in one app</div><div class="compare-cell"><span class="yes">✓</span></div><div class="compare-cell"><span class="no">✕</span></div><div class="compare-cell"><span class="no">✕</span></div></div>
+  <div class="compare-row"><div class="compare-cell">Monthly cost</div><div class="compare-cell" style="color:var(--accent-light);font-weight:700;">$29–$49/mo</div><div class="compare-cell" style="color:var(--text-muted);">"Free" + your data</div><div class="compare-cell" style="color:var(--text-muted);">"Free" + $12.99/mo</div></div>
+</div>
+
+<!-- PRICING -->
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">Pay once. Own your privacy.</div>
+  <div class="section-sub" style="margin-bottom:40px;">Two plans. No hidden fees. No feature gates on the things that matter.</div>
+  <div class="pricing-row">
+    <div class="price-card">
+      <div class="price-tier">Family</div>
+      <div class="price-amount">$29<span>/mo</span></div>
+      <div class="price-desc">Up to 6 family members</div>
+      <ul class="price-features">
+        <li>Shared family calendar</li>
+        <li>Live location (6 members)</li>
+        <li>Smart shopping list</li>
+        <li>Password vault (shared + private)</li>
+        <li>Basic smart home (10 devices)</li>
+        <li>Mobile app (iOS + Android)</li>
+      </ul>
+      <button class="price-cta">Start Free Trial</button>
+    </div>
+    <div class="price-card featured">
+      <div class="price-tier">Family+</div>
+      <div class="price-amount">$49<span>/mo</span></div>
+      <div class="price-desc">Unlimited members</div>
+      <ul class="price-features">
+        <li>Everything in Family</li>
+        <li>Unlimited family members</li>
+        <li>Full smart home (100+ devices)</li>
+        <li>Family budget tracker</li>
+        <li>Kids pocket money tracker</li>
+        <li>Advanced location history</li>
+        <li>Priority support</li>
+        <li>Self-hosted option (your hardware)</li>
+      </ul>
+      <button class="price-cta featured-btn">Start Free Trial</button>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Your family deserves better than surveillance capitalism.</h2>
+  <p>30-day free trial. No credit card required. Cancel any time.</p>
+  <div class="cta-btns">
+    <button class="btn-large">Start Free Trial</button>
+    <button class="btn-large-ghost">Watch a Demo</button>
+  </div>
+  <div class="cta-note">Works on iOS · Android · Web · No app store account required</div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="nav-logo-mark">🏠</div>
+      <div><div class="nav-brand">Quorbz Home</div><div style="font-size:11px;color:var(--text-muted);">by Quorbz</div></div>
+    </div>
+    <div class="footer-text">
+      <a href="#" style="color:var(--text-muted);margin-right:16px;">Privacy Policy</a>
+      <a href="#" style="color:var(--text-muted);margin-right:16px;">Terms</a>
+      <a href="#" style="color:var(--text-muted);">Security</a>
+    </div>
+    <div class="footer-text">© 2026 Quorbz LLC</div>
+  </div>
+</footer>
+
+<div class="review-note">🏠 Design Mockup · V3 Family Dashboard</div>
+</body>
+</html>
