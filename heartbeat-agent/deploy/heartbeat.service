@@ -1,0 +1,21 @@
+# Nexus Heartbeat Agent — systemd user service (Linux agents)
+# Install to: ~/.config/systemd/user/nexus-heartbeat.service
+# Enable: systemctl --user enable nexus-heartbeat && systemctl --user start nexus-heartbeat
+# Logs: journalctl --user -u nexus-heartbeat -f
+
+[Unit]
+Description=Quorbz Nexus Heartbeat Agent
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/nexus-heartbeat
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+RestartSec=30
+EnvironmentFile=%h/nexus-heartbeat/.env
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

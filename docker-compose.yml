@@ -1,0 +1,111 @@
+version: '3.9'
+
+# Quorbz Nexus — Docker Compose (deploy on DL380)
+# Prerequisites: PostgreSQL running locally on DL380 (or use the db service below)
+#
+# Start: docker compose up -d
+# Logs:  docker compose logs -f nexus-backend
+# Stop:  docker compose down
+
+services:
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: nexus
+      POSTGRES_USER: nexus
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD required}
+    volumes:
+      - nexus_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Nexus Backend ──────────────────────────────────────────────────────────
+  nexus-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://nexus:${DB_PASSWORD}@db:5432/nexus
+      PORT: 3001
+      NODE_ENV: production
+      NEXUS_TELEGRAM_BOT_TOKEN: ${NEXUS_TELEGRAM_BOT_TOKEN:-}
+      NEXUS_TELEGRAM_ADMIN_CHAT_ID: ${NEXUS_TELEGRAM_ADMIN_CHAT_ID:-}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET required}
+      ANTHROPIC_BILLING_KEY: ${ANTHROPIC_BILLING_KEY:-}
+      XAI_BILLING_KEY: ${XAI_BILLING_KEY:-}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+    ports:
+      - "3001:3001"
+
+  # ── Nexus Frontend ─────────────────────────────────────────────────────────
+  nexus-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_GRAFANA_URL: ${VITE_GRAFANA_URL:-}
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - nexus-backend
+
+  # ── Prometheus ─────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - nexus_prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=30d'
+
+  # ── Grafana ────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    depends_on:
+      - prometheus
+      - db
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD required}
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"  # needed for iframe in Infrastructure tab
+    volumes:
+      - nexus_grafana_data:/var/lib/grafana
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3002:3000"
+
+  # ── Loki (log aggregation) ─────────────────────────────────────────────────
+  loki:
+    image: grafana/loki:latest
+    restart: always
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./deploy/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - nexus_loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+volumes:
+  nexus_pgdata:
+  nexus_prometheus_data:
+  nexus_grafana_data:
+  nexus_loki_data:

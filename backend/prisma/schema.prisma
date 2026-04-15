@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Agents ──────────────────────────────────────────────────────────────────
+
+model Agent {
+  id                 String   @id @default(uuid())
+  name               String   // "Nico", "Elena", etc.
+  role               String   // "CTO", "President", etc.
+  machine            String   // "Mac Studio M4 Max", "DL360", etc.
+  ip                 String   // "192.168.50.x"
+  os                 String   // "macOS", "Linux"
+  model              String   // "claude-sonnet-4-6", "grok-4-1-fast-reasoning"
+  hierarchyLevel     Int      // 0=Benjamin, 1=ownership, 2=executive, 3=lead, 4=contributor
+  reportsTo          String?
+  venture            String?  // "venture-1", "venture-2", null = cross-venture
+  orchestrationScope String[] // IDs of agents this agent can direct
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  supervisor  Agent?   @relation("AgentHierarchy", fields: [reportsTo], references: [id])
+  reports     Agent[]  @relation("AgentHierarchy")
+  heartbeats  Heartbeat[]
+  tasksAssigned Task[] @relation("AssignedAgent")
+  tasksCreated  Task[] @relation("CreatedByAgent")
+  budgets     Budget[]
+}
+
+// ─── Heartbeats ───────────────────────────────────────────────────────────────
+
+model Heartbeat {
+  id          String   @id @default(uuid())
+  agentId     String
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  timestamp   DateTime @default(now())
+  status      String   // "healthy", "degraded", "offline"
+  cpuPercent  Float?
+  ramPercent  Float?
+  diskPercent Float?
+  nanoclaw    Boolean? // is nanoclaw process running
+  nodeVersion String?
+  uptimeSecs  Int?
+  extra       Json?
+
+  @@index([agentId, timestamp])
+}
+
+// ─── Tasks ────────────────────────────────────────────────────────────────────
+
+model Task {
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  status        String   // "assigned" | "in_progress" | "blocked" | "review" | "complete"
+  assignedToId  String
+  assignedTo    Agent    @relation("AssignedAgent", fields: [assignedToId], references: [id])
+  createdById   String?
+  createdBy     Agent?   @relation("CreatedByAgent", fields: [createdById], references: [id])
+  sourceVenture String?  // venture that originated the task
+  blockReason   String?
+  pipelineStage String?  // for pipeline-linked tasks
+  dueAt         DateTime?
+  completedAt   DateTime?
+  durationMins  Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  bridgeEvents  BridgeEvent[]
+}
+
+// ─── Product Pipeline ─────────────────────────────────────────────────────────
+
+model PipelineItem {
+  id              String   @id @default(uuid())
+  title           String
+  venture         String   // "venture-1", "venture-2", etc.
+  currentStage    String   // "research" | "leo_precheck" | "build" | "copy" | "leo_final" | "benjamin_approval" | "publish"
+  status          String   // "active" | "blocked" | "approved" | "rejected" | "published"
+  assignedLeadId  String?
+  blockReason     String?
+  stageHistory    Json     @default("[]") // [{stage, enteredAt, exitedAt, result}]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Cross-Venture Bridge Events ─────────────────────────────────────────────
+
+model BridgeEvent {
+  id              String   @id @default(uuid())
+  taskId          String
+  task            Task     @relation(fields: [taskId], references: [id])
+  fromVenture     String
+  toVenture       String
+  fromAgentId     String
+  toAgentId       String
+  reason          String   // "leo_precheck" | "leo_final" | "publishing" | "qa_review" | "sales_assist"
+  status          String   // "pending" | "accepted" | "rejected" | "returned"
+  rejectionReason String?
+  createdAt       DateTime @default(now())
+  resolvedAt      DateTime?
+
+  @@index([taskId])
+}
+
+// ─── Budgets ──────────────────────────────────────────────────────────────────
+
+model Budget {
+  id         String   @id @default(uuid())
+  agentId    String
+  agent      Agent    @relation(fields: [agentId], references: [id])
+  month      String   // "2026-04"
+  limitUsd   Float
+  spentUsd   Float    @default(0)
+  alertAt    Float    @default(0.8) // fraction — alert when spentUsd >= limitUsd * alertAt
+  alerted    Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+
+  @@unique([agentId, month])
+}
+
+// ─── Cost Entries ─────────────────────────────────────────────────────────────
+
+model CostEntry {
+  id           String   @id @default(uuid())
+  agentId      String
+  date         DateTime
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  cacheHits    Int      @default(0)
+  costUsd      Float
+  model        String
+  source       String   // "anthropic_api" | "xai_api" | "manual"
+  createdAt    DateTime @default(now())
+
+  @@index([agentId, date])
+}
+
+// ─── Schedules ────────────────────────────────────────────────────────────────
+
+model Schedule {
+  id          String   @id @default(uuid())
+  name        String
+  agentId     String
+  cronExpr    String
+  prompt      String
+  isActive    Boolean  @default(true)
+  lastRunAt   DateTime?
+  lastResult  String?  // "success" | "failed"
+  lastError   String?
+  nextRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Security Incidents ───────────────────────────────────────────────────────
+
+model Incident {
+  id             String   @id @default(uuid())
+  agentId        String?
+  type           String   // "ssh_fail" | "outbound_anomaly" | "file_modified" | "port_scan" | "process_anomaly" | "login_attempt"
+  severity       String   // "low" | "medium" | "high" | "critical"
+  description    String
+  source         String   // machine hostname or IP
+  acknowledged   Boolean  @default(false)
+  acknowledgedAt DateTime?
+  resolvedAt     DateTime?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  @@index([agentId, createdAt])
+  @@index([severity, acknowledged])
+}
+
+// ─── Auth Sessions (Telegram OTP) ────────────────────────────────────────────
+
+model AuthSession {
+  id        String   @id @default(uuid())
+  token     String   @unique @default(uuid())
+  otp       String?
+  otpExpiry DateTime?
+  verified  Boolean  @default(false)
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+// ─── Synthesizer Feed ────────────────────────────────────────────────────────
+
+model SynthesizerEntry {
+  id        String   @id @default(uuid())
+  type      String   // "briefing" | "alert" | "milestone" | "status_change" | "blocker"
+  title     String
+  body      String
+  priority  Int      @default(0)
+  agentId   String?
+  venture   String?
+  metadata  Json?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@index([createdAt])
+  @@index([type, read])
+}

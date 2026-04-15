@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Nexus backend metrics (custom endpoint — to be added)
+  - job_name: 'nexus-backend'
+    static_configs:
+      - targets: ['nexus-backend:3001']
+
+  # Node Exporter — one per agent machine
+  # TODO: Add machine IPs when SSH access is established for each agent
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets:
+          # - '192.168.50.10:9100'   # TODO: Nico — confirm IP
+          - '192.168.50.43:9100'   # Elena (DL360)
+          - '192.168.50.112:9100'  # Leo (DL380) — TODO: confirm IP
+          # - '192.168.50.11:9100'  # TODO: Mila — confirm IP
+          # - '192.168.50.12:9100'  # TODO: Marco — confirm IP
+          # - '192.168.50.13:9100'  # TODO: Maya — confirm IP
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
