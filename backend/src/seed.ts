@@ -49,6 +49,14 @@ const AGENTS: AgentSeed[] = [
     budgetLimitUsd: 100,
   },
 
+  // ── Agent 7 — CS Chatbot ──────────────────────────────────────────────────
+  {
+    id: 'agent-pico', name: 'Pico', role: 'CS Chatbot',
+    machine: 'Mac Studio M4 Max', ip: '192.168.50.10', os: 'macOS',
+    model: 'grok-4-1-fast-reasoning', hierarchyLevel: 3, reportsTo: 'agent-nico',
+    venture: 'venture-1', orchestrationScope: [],
+  },
+
   // ── V1 Lead (Level 3) ─────────────────────────────────────────────────────
   {
     id: 'agent-aria', name: 'Aria', role: 'V1 Products Lead',

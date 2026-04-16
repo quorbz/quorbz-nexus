@@ -16,6 +16,7 @@ import budgetRouter from './routes/budget.js';
 import securityRouter from './routes/security.js';
 import synthesizerRouter from './routes/synthesizer.js';
 import schedulesRouter from './routes/schedules.js';
+import knowledgeRouter from './routes/knowledge.js';
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/budget', budgetRouter);
 app.use('/api/security', securityRouter);
 app.use('/api/synthesizer', synthesizerRouter);
 app.use('/api/schedules', schedulesRouter);
+app.use('/api/knowledge', knowledgeRouter);
 
 // Create HTTP server (WebSocket attaches to same server)
 const server = http.createServer(app);
